@@ -44,37 +44,61 @@ widget2::widget2(QWidget *parent): cap(0)
 	showqbackimg = new QLabel(this);
 	showcap = new QLabel(this);
 	showqresult = new QLabel(this);
+
+	/*----------Setup the Size of Images and Windows-----------*/
 	capsize = QSize(480, 360);
-	this -> resize(capsize.width()*2 + 60, 1000);
+	this -> resize(capsize.width()*2 + 60, 700);
+	// this -> resize(capsize.width()*2 + 60, 1000);
 	this -> setWindowTitle("Ariel");
 
+	/*-----------------Setup Capture Image Label-----------------*/
+	showcapture = new QLabel(this);
+	QPoint tmpoint = QPoint(0, capsize.height() + 20);
+	QRect tmprect = QRect(tmpoint, capsize);
+	showcapture -> setGeometry(tmprect);
+
+	/*-----------------Setup Timer-----------------*/
 	timer = new QTimer(this);
 	timer -> start(30);
-	connect(timer, SIGNAL(timeout()), this, SLOT(capture()));
+	connect(timer, SIGNAL(timeout()), this, SLOT(camera_caping()));
 
+	/*-----------------Setup The Result Image Label-----------------*/
 	QPoint point = QPoint(capsize.width() + 60, 0);
 	QRect rect = QRect(point, capsize);
 	showqresult -> setGeometry(rect);
 	showqbackimg -> setGeometry(rect);
 
+	/*-----------------Setup The Switch Button-----------------*/
 	bt0 = new QPushButton(this);
 	bt0 -> setText("Switch");
-	bt0 -> setGeometry(750, 400, 70, 50);
+	bt0 -> setGeometry(780, 400, 70, 50);
 	connect(bt0, SIGNAL(clicked()), this, SLOT(change_bg()));
 
+	/*-----------------Setup The Capture Button-----------------*/
+	bt1 = new QPushButton(this);
+	bt1 -> setText("Capture");
+	bt1 -> setGeometry(700, 400, 70, 50);
+	connect(bt1, SIGNAL(clicked()), this, SLOT(capture()));
+
+	/*-----------------Show The Backing Image-----------------*/
 	qbackimg = QImage("1new.jpg");
-	showqbackimg -> setPixmap(QPixmap::fromImage(qbackimg));
+	// showqbackimg -> setPixmap(QPixmap::fromImage(qbackimg));
 }
 
-void widget2::capture()
+void widget2::camera_caping()
 {
-	cap >> ccapimg;
+	/*---------------------Show Captured Image--------------------*/
+	cap >> ccapimg; //CV_8UC3
 	qcapimg = Mat2QImage(ccapimg);
 	showcap -> setPixmap(QPixmap::fromImage(qcapimg).scaled(capsize));
 	showcap -> resize(capsize);
 
+	/*--------------Convert the BG to RGB888 then CV_8UC4---------------*/ 
+	qbackimg = qbackimg.convertToFormat(QImage::Format_RGB888); //RGB888 <-> CV_8UC3
 	cbackimg = QImage2Mat(qbackimg);
 	chromakey(cbackimg, ccapimg, &cresult);
+	
+	/*-----------------Show the Result Image-----------------*/
 	qresult = Mat2QImage(cresult);
 	showqresult -> setPixmap(QPixmap::fromImage(qresult).scaled(capsize));
 
@@ -82,35 +106,44 @@ void widget2::capture()
 	else  showqresult->setHidden(true);
 }
 
+void widget2::capture()
+{
+	/*--------------------Small Screen-----------------------*/
+	showcapture -> setPixmap(QPixmap::fromImage(qresult).scaled(QSize(320, 240)));
+	showcapture -> resize(QSize(320, 240));
+
+	/*----------------------Big Screen------------------------*/
+	// showcapture -> setPixmap(QPixmap::fromImage(qresult).scaled(capsize));
+	// showcapture -> resize(capsize);
+}
 
 widget2::~widget2()
 {}
 
-void chromakey(const Mat under, const Mat over, Mat *dst){
-	//create the destination matrix
-	*dst = Mat(under.rows, under.cols, CV_8UC3);
-	for(int y = 0 ; y < under.rows ; ++y)
+void chromakey(const Mat cbackimg, const Mat ccapimg, Mat *dst){
+	*dst = Mat(cbackimg.rows, cbackimg.cols, CV_8UC3);
+	for(int y = 0 ; y < cbackimg.rows ; ++y)
 	{
-		for(int x = 0 ; x < under.cols ; ++x)
+		for(int x = 0 ; x < cbackimg.cols ; ++x)
 		{
-			if(over.at<Vec3b>(y,x)[0] >= red_l && over.at<Vec3b>(y,x)[0] <= red_h && over.at<Vec3b>(y,x)[1] >= green_l && over.at<Vec3b>(y,x)[1] <= green_h && over.at<Vec3b>(y,x)[2] >= blue_l && over.at<Vec3b>(y,x)[2] <= blue_h)
+			if(ccapimg.at<Vec3b>(y,x)[0] >= red_l && ccapimg.at<Vec3b>(y,x)[0] <= red_h && ccapimg.at<Vec3b>(y,x)[1] >= green_l && ccapimg.at<Vec3b>(y,x)[1] <= green_h && ccapimg.at<Vec3b>(y,x)[2] >= blue_l && ccapimg.at<Vec3b>(y,x)[2] <= blue_h)
 			{
-				dst->at<Vec3b>(y,x)[0] = under.at<Vec3b>(y,x)[0];
-			            	dst->at<Vec3b>(y,x)[1] = under.at<Vec3b>(y,x)[1];
-			            	dst->at<Vec3b>(y,x)[2] = under.at<Vec3b>(y,x)[2];
+				dst->at<Vec3b>(y,x)[0] = cbackimg.at<Vec3b>(y,x)[0];
+				dst->at<Vec3b>(y,x)[1] = cbackimg.at<Vec3b>(y,x)[1];
+				dst->at<Vec3b>(y,x)[2] = cbackimg.at<Vec3b>(y,x)[2];
 			}
 			else
 			{
-				dst->at<Vec3b>(y,x)[0] = over.at<Vec3b>(y,x)[0];
-				dst->at<Vec3b>(y,x)[1] = over.at<Vec3b>(y,x)[1];
-			            	dst->at<Vec3b>(y,x)[2] = over.at<Vec3b>(y,x)[2];
+				dst->at<Vec3b>(y,x)[0] = ccapimg.at<Vec3b>(y,x)[0];
+				dst->at<Vec3b>(y,x)[1] = ccapimg.at<Vec3b>(y,x)[1];
+				dst->at<Vec3b>(y,x)[2] = ccapimg.at<Vec3b>(y,x)[2];
 			}
 		}
 	}
 }
 
 QImage Mat2QImage(const Mat3b &src) {
-	QImage dest(src.cols, src.rows, QImage::Format_ARGB32);
+	QImage dest(src.cols, src.rows, QImage::Format_RGB32);
 	for (int y = 0; y < src.rows; ++y)
 	{
 		const Vec3b *srcrow = src[y];
@@ -122,8 +155,8 @@ QImage Mat2QImage(const Mat3b &src) {
 
 Mat QImage2Mat(const QImage &inImage)
 {
-	Mat  mat(inImage.height(), inImage.width(), CV_8UC4, const_cast<uchar*>(inImage.bits()), inImage.bytesPerLine());
-	return mat.clone();
+	QImage   swapped = inImage.rgbSwapped(); 
+	return Mat( swapped.height(), swapped.width(), CV_8UC3, const_cast<uchar*>(swapped.bits()), swapped.bytesPerLine() ).clone();
 }
 
 void widget2::change_bg()

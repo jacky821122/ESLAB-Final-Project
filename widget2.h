@@ -18,15 +18,16 @@ public:
 	widget2(QWidget *parent = 0);
 	~widget2();
 	QSize capsize;
-	QLabel *showcap, *showqbackimg, *showqresult;
+	QLabel *showcap, *showqbackimg, *showqresult, *showcapture;
 	QImage qcapimg, qbackimg, qresult;
 	QTimer *timer;
-	QPushButton *bt0;
+	QPushButton *bt0, *bt1;
 	int delta;
 	cv::VideoCapture cap;
 	cv::Mat ccapimg, cbackimg, cresult;
 
 	public slots:
+	void camera_caping();
 	void capture();
 	void change_bg();
 };
