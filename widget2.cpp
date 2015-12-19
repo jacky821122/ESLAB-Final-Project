@@ -49,7 +49,7 @@ widget2::widget2(QWidget *parent): cap(0)
 	this -> setWindowTitle("Ariel");
 
 	timer = new QTimer(this);
-	timer -> start(30);
+	timer -> start(100);
 	connect(timer, SIGNAL(timeout()), this, SLOT(capture()));
 
 	QPoint point = QPoint(capsize.width() + 60, 0);
