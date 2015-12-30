@@ -1,5 +1,4 @@
 #include "widget2.h"
-#include "detectcolor.h"
 #include <iostream>
 #include <cstdio>
 #include <QApplication>

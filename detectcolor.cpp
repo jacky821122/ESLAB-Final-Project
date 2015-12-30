@@ -1,6 +1,6 @@
 #include <QtWidgets>
 #include <iostream> 
-#include "detectcolor.h"
+#include "sliderwidget.h"
 
 using namespace cv;
 using namespace std;
@@ -33,16 +33,21 @@ void SubQLabel::mousePressEvent(QMouseEvent *event)
 		green = clrCurrent.green();
 		blue = clrCurrent.blue();
 
-		red_l = red ;
-		red_h = red + 50;
-		green_l = green ;
-		green_h = green + 50;
-		blue_l = blue ;
-		blue_h = blue + 50;
+		red_l =  (red > 30)? red - 30 : 0;
+		red_h = (red > 205)? 255 : red + 50;
+		green_l = (green > 30)? green - 30 : 0;
+		green_h = (green > 205)? 255 : green + 50;
+		blue_l = (blue > 30)? blue - 30 : 0;
+		blue_h = (blue > 205)? 255 : blue + 50;
 
-		cout << red_l << " " << green_l << " " << blue_l << "\n";
+		emit red_low_Changed( red_l);
+		emit red_high_Changed( red_h);
+		emit green_low_Changed( green_l);
+		emit green_high_Changed( green_h);
+		emit blue_low_Changed( blue_l);
+		emit blue_high_Changed( blue_h);
 
-		emit redChanged( red_l);
+		this->setHidden(true);
 	}
 
 }

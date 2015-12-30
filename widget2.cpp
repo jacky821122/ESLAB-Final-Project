@@ -1,6 +1,5 @@
 #include "widget2.h"
 #include "sliderwidget.h"
-#include "detectcolor.h"
 #include <iostream>
 #include <QPoint>
 #include <QRect>
@@ -25,6 +24,13 @@ widget2::widget2(QWidget *parent): cap(0)
 	showqbackimg = new QLabel(this);
 	showcap = new QLabel(this);
 	showqresult = new QLabel(this);
+
+	connect(subqlabel, SIGNAL(red_low_Changed( const int&)), swidget->red_low, SLOT(setValue(int)));
+	connect(subqlabel, SIGNAL(red_high_Changed( const int&)), swidget->red_high, SLOT(setValue(int)));
+	connect(subqlabel, SIGNAL(green_low_Changed( const int&)), swidget->green_low, SLOT(setValue(int)));
+	connect(subqlabel, SIGNAL(green_high_Changed( const int&)), swidget->green_high, SLOT(setValue(int)));
+	connect(subqlabel, SIGNAL(blue_low_Changed( const int&)), swidget->blue_low, SLOT(setValue(int)));
+	connect(subqlabel, SIGNAL(blue_high_Changed( const int&)), swidget->blue_high, SLOT(setValue(int)));
 
 	/*----------Setup the Size of Images and Windows-----------*/
 	capsize = QSize(532, 399);
@@ -74,14 +80,6 @@ void widget2::camera_caping()
 	blue_l = swidget -> blue_low->sliderPosition();
 	blue_h = swidget -> blue_high->sliderPosition();
 
-/*		red_l = subqlabel -> red ;
-		red_h = subqlabel -> red + 50;
-		green_l = subqlabel -> green ;
-		green_h = subqlabel -> green + 50;
-		blue_l = subqlabel -> blue ;
-		blue_h = subqlabel -> blue + 50;
-*/
-
 	/*--------------Convert the BG to RGB888 then CV_8UC3---------------*/ 
 	qbackimg = qbackimg.convertToFormat(QImage::Format_RGB888); //RGB888 (=) CV_8UC3
 	cbackimg = QImage2Mat(qbackimg);
@@ -107,7 +105,7 @@ widget2::~widget2()
 
 void widget2::control_pannel_pop()
 {
-	swidget->show();
+	swidget -> show();
 }
 
 void chromakey(const Mat cbackimg, const Mat ccapimg, Mat *dst){
