@@ -1,10 +1,5 @@
 #include "sliderwidget.h"
-#include <QHBoxLayout>
-#include <QVBoxLayout>
 #include <QGridLayout>
-#include <QImage> //for test
-#include <QLabel> //for test
-#include <QPixmap> //for test
 
 sliderwidget::sliderwidget(QWidget *parent)
 {
@@ -14,25 +9,6 @@ sliderwidget::sliderwidget(QWidget *parent)
 	green_high_label = new QLabel(tr("Green High"));
 	blue_low_label = new QLabel(tr("Blue Low"));
 	blue_high_label = new QLabel(tr("Blue High"));
-
-	red_low_spinbox = new QSpinBox();
-	red_low_spinbox -> setRange(0, 255);
-	red_low_spinbox -> setSingleStep(1);
-	red_high_spinbox = new QSpinBox();
-	red_high_spinbox -> setRange(0, 255);
-	red_high_spinbox -> setSingleStep(1);
-	green_low_spinbox = new QSpinBox();
-	green_low_spinbox -> setRange(0, 255);
-	green_low_spinbox -> setSingleStep(1);
-	green_high_spinbox = new QSpinBox();
-	green_high_spinbox -> setRange(0, 255);
-	green_high_spinbox -> setSingleStep(1);
-	blue_low_spinbox = new QSpinBox();
-	blue_low_spinbox -> setRange(0, 255);
-	blue_low_spinbox -> setSingleStep(1);
-	blue_high_spinbox = new QSpinBox();
-	blue_high_spinbox -> setRange(0, 255);
-	blue_high_spinbox -> setSingleStep(1);
 
 	red_low = new QSlider(Qt::Horizontal);
 	red_low -> setMinimum(0);  
@@ -59,6 +35,25 @@ sliderwidget::sliderwidget(QWidget *parent)
 	blue_high -> setMaximum(255);  
 	blue_high -> setSingleStep(1);
 
+	red_low_spinbox = new QSpinBox();
+	red_low_spinbox -> setRange(0, 255);
+	red_low_spinbox -> setSingleStep(1);
+	red_high_spinbox = new QSpinBox();
+	red_high_spinbox -> setRange(0, 255);
+	red_high_spinbox -> setSingleStep(1);
+	green_low_spinbox = new QSpinBox();
+	green_low_spinbox -> setRange(0, 255);
+	green_low_spinbox -> setSingleStep(1);
+	green_high_spinbox = new QSpinBox();
+	green_high_spinbox -> setRange(0, 255);
+	green_high_spinbox -> setSingleStep(1);
+	blue_low_spinbox = new QSpinBox();
+	blue_low_spinbox -> setRange(0, 255);
+	blue_low_spinbox -> setSingleStep(1);
+	blue_high_spinbox = new QSpinBox();
+	blue_high_spinbox -> setRange(0, 255);
+	blue_high_spinbox -> setSingleStep(1);
+
 	connect(red_low_spinbox, SIGNAL(valueChanged(int)), red_low, SLOT(setValue(int)));
 	connect(red_low, SIGNAL(valueChanged(int)), red_low_spinbox, SLOT(setValue(int)));
 	connect(red_high_spinbox, SIGNAL(valueChanged(int)), red_high, SLOT(setValue(int)));
@@ -70,11 +65,8 @@ sliderwidget::sliderwidget(QWidget *parent)
 	connect(blue_low_spinbox, SIGNAL(valueChanged(int)), blue_low, SLOT(setValue(int)));
 	connect(blue_low, SIGNAL(valueChanged(int)), blue_low_spinbox, SLOT(setValue(int)));
 	connect(blue_high_spinbox, SIGNAL(valueChanged(int)), blue_high, SLOT(setValue(int)));
-	connect(blue_low, SIGNAL(valueChanged(int)), blue_low_spinbox, SLOT(setValue(int)));
+	connect(blue_high, SIGNAL(valueChanged(int)), blue_high_spinbox, SLOT(setValue(int)));
 
-	// QLabel *showimg = new QLabel(this);
-	// QImage img = QImage("1new.jpg");
-	// showimg -> setPixmap(QPixmap::fromImage(img));
 	QGridLayout *layout = new QGridLayout();
 	layout -> addWidget(red_low_label, 0, 0);
 	layout -> addWidget(red_low, 0, 1);
@@ -96,15 +88,9 @@ sliderwidget::sliderwidget(QWidget *parent)
 	layout -> addWidget(blue_high_spinbox, 5, 2);
 
 	this -> setLayout(layout);
-	this -> resize(400, 400);
+	this -> resize(300, 200);
 	this -> setWindowTitle("Control Pannel");
-
 }
 
 sliderwidget::~sliderwidget()
 {}
-
-// sliderwidget::setValue(int value)
-// {
-
-// }
