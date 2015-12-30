@@ -8,5 +8,5 @@ INCLUDEPATH += .
 QT += widgets
 
 # Input
-HEADERS += widget2.h
-SOURCES += main.cpp widget2.cpp
+HEADERS += widget2.h sliderwidget.h
+SOURCES += main.cpp widget2.cpp sliderwidget.cpp

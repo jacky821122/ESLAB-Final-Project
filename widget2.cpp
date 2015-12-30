@@ -1,4 +1,5 @@
 #include "widget2.h"
+#include "sliderwidget.h"
 #include <iostream>
 #include <QPoint>
 #include <QRect>
@@ -15,30 +16,33 @@ double blue_l, blue_h;
 
 void on_trackbar(int,void*)
 {
-	red_l = getTrackbarPos("Red Low", "Image Result1");
-	red_h = getTrackbarPos("Red High", "Image Result1");
-	green_l = getTrackbarPos("Green Low", "Image Result1");
-	green_h = getTrackbarPos("Green High", "Image Result1");
-	blue_l = getTrackbarPos("Blue Low", "Image Result1");
-	blue_h = getTrackbarPos("Blue High", "Image Result1");
+	// red_l = getTrackbarPos("Red Low", "Image Result1");
+	// red_h = getTrackbarPos("Red High", "Image Result1");
+	// green_l = getTrackbarPos("Green Low", "Image Result1");
+	// green_h = getTrackbarPos("Green High", "Image Result1");
+	// blue_l = getTrackbarPos("Blue Low", "Image Result1");
+	// blue_h = getTrackbarPos("Blue High", "Image Result1");
 }
 
 widget2::widget2(QWidget *parent): cap(0)
 {
-	namedWindow("Image Result1", 1);
+	// namedWindow("Image Result1", 1);
 
-	createTrackbar("Red Low", "Image Result1", 0, 255, on_trackbar);
-	createTrackbar("Red High", "Image Result1", 0, 255, on_trackbar);
-	createTrackbar("Green Low", "Image Result1", 0, 255, on_trackbar);
-	createTrackbar("Green High", "Image Result1", 0, 255, on_trackbar);
-	createTrackbar("Blue Low", "Image Result1", 0, 255, on_trackbar);
-	createTrackbar("Blue High", "Image Result1", 0, 255, on_trackbar);
-	cvSetTrackbarPos("Red Low", "Image Result1",0);
-	cvSetTrackbarPos("Red High", "Image Result1",0);
-	cvSetTrackbarPos("Green Low", "Image Result1",0);
-	cvSetTrackbarPos("Green High", "Image Result1",0);
-	cvSetTrackbarPos("Blue Low", "Image Result1",0);
-	cvSetTrackbarPos("Blue High", "Image Result1",0);
+	// createTrackbar("Red Low", "Image Result1", 0, 255, on_trackbar);
+	// createTrackbar("Red High", "Image Result1", 0, 255, on_trackbar);
+	// createTrackbar("Green Low", "Image Result1", 0, 255, on_trackbar);
+	// createTrackbar("Green High", "Image Result1", 0, 255, on_trackbar);
+	// createTrackbar("Blue Low", "Image Result1", 0, 255, on_trackbar);
+	// createTrackbar("Blue High", "Image Result1", 0, 255, on_trackbar);
+	// cvSetTrackbarPos("Red Low", "Image Result1",0);
+	// cvSetTrackbarPos("Red High", "Image Result1",0);
+	// cvSetTrackbarPos("Green Low", "Image Result1",0);
+	// cvSetTrackbarPos("Green High", "Image Result1",0);
+	// cvSetTrackbarPos("Blue Low", "Image Result1",0);
+	// cvSetTrackbarPos("Blue High", "Image Result1",0);
+
+	swidget = new sliderwidget();
+
 
 	delta = 0;
 	showqbackimg = new QLabel(this);
@@ -46,9 +50,9 @@ widget2::widget2(QWidget *parent): cap(0)
 	showqresult = new QLabel(this);
 
 	/*----------Setup the Size of Images and Windows-----------*/
-	capsize = QSize(480, 360);
-	this -> resize(capsize.width()*2 + 60, 700);
-	// this -> resize(capsize.width()*2 + 60, 1000);
+	capsize = QSize(532, 399);
+	this -> resize(800, 400); // In pandaboard
+	// this -> resize(capsize.width()*2 + 60, 400); // Having two Windows
 	this -> setWindowTitle("Ariel");
 
 	/*-----------------Setup Capture Image Label-----------------*/
@@ -63,7 +67,7 @@ widget2::widget2(QWidget *parent): cap(0)
 	connect(timer, SIGNAL(timeout()), this, SLOT(camera_caping()));
 
 	/*-----------------Setup The Result Image Label-----------------*/
-	QPoint point = QPoint(capsize.width() + 60, 0);
+	QPoint point = QPoint(268, 0);
 	QRect rect = QRect(point, capsize);
 	showqresult -> setGeometry(rect);
 	showqbackimg -> setGeometry(rect);
@@ -71,13 +75,13 @@ widget2::widget2(QWidget *parent): cap(0)
 	/*-----------------Setup The Switch Button-----------------*/
 	bt0 = new QPushButton(this);
 	bt0 -> setText("Switch");
-	bt0 -> setGeometry(780, 400, 70, 50);
+	bt0 -> setGeometry(99, 40, 70, 50);
 	connect(bt0, SIGNAL(clicked()), this, SLOT(change_bg()));
 
 	/*-----------------Setup The Capture Button-----------------*/
 	bt1 = new QPushButton(this);
 	bt1 -> setText("Capture");
-	bt1 -> setGeometry(700, 400, 70, 50);
+	bt1 -> setGeometry(99, 130, 70, 50);
 	connect(bt1, SIGNAL(clicked()), this, SLOT(capture()));
 
 	/*-----------------Show The Backing Image-----------------*/
@@ -87,14 +91,23 @@ widget2::widget2(QWidget *parent): cap(0)
 
 void widget2::camera_caping()
 {
-	/*---------------------Show Captured Image--------------------*/
+
+	red_l = swidget -> red_low->sliderPosition();
+	red_h = swidget -> red_high->sliderPosition();
+	green_l = swidget -> green_low->sliderPosition();
+	green_h = swidget -> green_high->sliderPosition();
+	blue_l = swidget -> blue_low->sliderPosition();
+	blue_h = swidget -> blue_high->sliderPosition();
+
+
 	cap >> ccapimg; //CV_8UC3
-	qcapimg = Mat2QImage(ccapimg);
+	/*---------------------Show Captured Image--------------------*/
+/*	qcapimg = Mat2QImage(ccapimg);
 	showcap -> setPixmap(QPixmap::fromImage(qcapimg).scaled(capsize));
 	showcap -> resize(capsize);
-
-	/*--------------Convert the BG to RGB888 then CV_8UC4---------------*/ 
-	qbackimg = qbackimg.convertToFormat(QImage::Format_RGB888); //RGB888 <-> CV_8UC3
+*/
+	/*--------------Convert the BG to RGB888 then CV_8UC3---------------*/ 
+	qbackimg = qbackimg.convertToFormat(QImage::Format_RGB888); //RGB888 (=) CV_8UC3
 	cbackimg = QImage2Mat(qbackimg);
 	chromakey(cbackimg, ccapimg, &cresult);
 	
@@ -161,7 +174,7 @@ Mat QImage2Mat(const QImage &inImage)
 
 void widget2::change_bg()
 {
-	switch (delta)
+	/*switch (delta)
 	{
 		case 0:
 		delta = 1;
@@ -169,5 +182,6 @@ void widget2::change_bg()
 		case 1:
 		delta = 0;
 		break;
-	}
+	}*/
+	swidget->show();
 }

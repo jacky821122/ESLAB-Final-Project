@@ -1,4 +1,5 @@
 #include "widget2.h"
+#include "sliderwidget.h"
 #include <iostream>
 #include <cstdio>
 #include <QApplication>
