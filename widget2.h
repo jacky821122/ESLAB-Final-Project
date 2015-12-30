@@ -1,5 +1,5 @@
-#ifndef W
-#define W
+#ifndef WIDGET2_H
+#define WIDGET2_H
 #include <QWidget>
 #include <QSize>
 #include <QLabel>
@@ -10,26 +10,28 @@
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
 
-class widget2: public QWidget
+class sliderwidget;
+
+class widget2 : public QWidget
 {
 	Q_OBJECT
 protected:
 public:
 	widget2(QWidget *parent = 0);
 	~widget2();
+	sliderwidget *swidget;
 	QSize capsize;
 	QLabel *showcap, *showqbackimg, *showqresult, *showcapture;
 	QImage qcapimg, qbackimg, qresult;
 	QTimer *timer;
-	QPushButton *bt0, *bt1;
-	int delta;
+	QPushButton *bt_pannel, *bt_capture;
 	cv::VideoCapture cap;
 	cv::Mat ccapimg, cbackimg, cresult;
 
 	public slots:
 	void camera_caping();
 	void capture();
-	void change_bg();
+	void control_pannel_pop();
 };
 
 #endif
