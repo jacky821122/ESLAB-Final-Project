@@ -11,54 +11,14 @@ using namespace std;
 extern QImage Mat2QImage(const Mat3b &src);
 Mat QImage2Mat(const QImage &inImage);
 void chromakey(const Mat, const Mat, Mat*);
-void colortest(QImage img);
-
-//void mousePressEvent(QMouseEvent *event);
 
 double red_l, red_h;
 double green_l, green_h;
 double blue_l, blue_h;
 
-int test = 0;
-int xxx,yyy;
-
-void on_trackbar(int,void*)
-{
-	/*red_l = getTrackbarPos("Red Low", "Image Result1");
-	red_h = getTrackbarPos("Red High", "Image Result1");
-	green_l = getTrackbarPos("Green Low", "Image Result1");
-	green_h = getTrackbarPos("Green High", "Image Result1");
-	blue_l = getTrackbarPos("Blue Low", "Image Result1");
-	blue_h = getTrackbarPos("Blue High", "Image Result1");*/
-}
-
 widget2::widget2(QWidget *parent): cap(0)
 {
-	subqlabel = new SubQLabel();
-
-	red_l = 255;
-	red_h = 255;
-	green_l = 255;
-	green_h = 255;
-	blue_l = 255;
-	blue_h = 255;
-	/*namedWindow("Image Result1", 1);
-
-	createTrackbar("Red Low", "Image Result1", 0, 255, on_trackbar);
-	createTrackbar("Red High", "Image Result1", 0, 255, on_trackbar);
-	createTrackbar("Green Low", "Image Result1", 0, 255, on_trackbar);
-	createTrackbar("Green High", "Image Result1", 0, 255, on_trackbar);
-	createTrackbar("Blue Low", "Image Result1", 0, 255, on_trackbar);
-	createTrackbar("Blue High", "Image Result1", 0, 255, on_trackbar);
-	cvSetTrackbarPos("Red Low", "Image Result1",0);
-	cvSetTrackbarPos("Red High", "Image Result1",0);
-	cvSetTrackbarPos("Green Low", "Image Result1",0);
-	cvSetTrackbarPos("Green High", "Image Result1",0);
-	cvSetTrackbarPos("Blue Low", "Image Result1",0);
-	cvSetTrackbarPos("Blue High", "Image Result1",0);*/
-
-
-	delta = 0;
+	subqlabel = new SubQLabel(this);
 	showqbackimg = new QLabel(this);
 	showcap = new QLabel(this);
 	showqresult = new QLabel(this);
@@ -128,31 +88,17 @@ void widget2::camera_caping()
 	/*-----------------Show the Result Image-----------------*/
 	qresult = Mat2QImage(cresult);
 	showqresult -> setPixmap(QPixmap::fromImage(qresult).scaled(capsize));
-
-	if (delta == 0) showqresult->setHidden(false);
-	else  showqresult->setHidden(true);
 }
 
 void widget2::capture()
 {
-	/*--------------------Small Screen-----------------------*/
-	cshowRGB = cresult;
-	showcapture -> setPixmap(QPixmap::fromImage(qresult).scaled(QSize(320, 240)));
-	showcapture -> resize(QSize(320, 240));
-
 	subqlabel -> qcapimg = qresult;
-	subqlabel-> setPixmap(QPixmap::fromImage(qcapimg).scaled(capsize));
+	subqlabel -> setPixmap(QPixmap::fromImage(qcapimg).scaled(capsize));
   	subqlabel -> resize(capsize);
   	subqlabel -> image_test = qcapimg;
 	subqlabel -> show();
 
 
-// cout << red_l << " " << green_l << " " << blue_l << endl;
-cout << subqlabel -> red << " " << subqlabel -> green << " " << subqlabel -> blue << endl;
-	
-	/*----------------------Big Screen------------------------*/
-	// showcapture -> setPixmap(QPixmap::fromImage(qresult).scaled(capsize));
-	// showcapture -> resize(capsize);
 }
 
 
@@ -210,33 +156,4 @@ void widget2::change_bg()
 		break;
 	}
 }
-
-void colortest(QImage img)
-{
-
-/*	if ( false == img.isNull() )
-	{
-    		QVector<QRgb> v = img.colorTable(); // returns a list of colors contained in the image's color table.
-    		 QVector<QRgb>::const_iterator it, itE;
-    		 it = v.begin();
-    		 it = it + 2000;
-    		 QColor clrCurrent(*it);
-    		 cout << clrCurrent.red() << " " << clrCurrent.green() <<" " <<clrCurrent.blue() <<endl;
-    		
-	}*/
-
-    		 for ( int row = 1; row < img.height() + 1; ++row )
-    for ( int col = 1; col < img.width() + 1; ++col )
-    {
-        QColor clrCurrent( img.pixel( row, col ) );
-
-        std::cout << "Pixel at [" << row << "," << col << "] contains color ("
-                  << clrCurrent.red() << ", "
-                  << clrCurrent.green() << ", "
-                  << clrCurrent.blue() << ", "
-                  << clrCurrent.alpha() << ")."
-                  << std::endl;
-    }
-}
-
 
