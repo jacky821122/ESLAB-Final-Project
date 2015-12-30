@@ -5,6 +5,9 @@
 #include <QLabel>
 #include <QSpinBox>
 
+class SubQLabel;
+class widget2;
+
 class sliderwidget : public QWidget
 {
 	Q_OBJECT
@@ -30,6 +33,10 @@ public:
 	QSpinBox *green_high_spinbox;
 	QSpinBox *blue_low_spinbox;
 	QSpinBox *blue_high_spinbox;
+public slots:
+	// void setred_l( const int &)
+	// void changeValue(int);
+
 };
 
 #endif

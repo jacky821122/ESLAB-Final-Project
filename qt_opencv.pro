@@ -6,7 +6,8 @@ TEMPLATE = app
 TARGET = qt_opencv
 INCLUDEPATH += .
 QT += widgets
+qtHaveModule(printsupport): QT += printsupport
 
 # Input
-HEADERS += sliderwidget.h widget2.h
-SOURCES += main.cpp sliderwidget.cpp widget2.cpp
+HEADERS += sliderwidget.h detectcolor.h widget2.h
+SOURCES += main.cpp sliderwidget.cpp detectcolor.cpp widget2.cpp

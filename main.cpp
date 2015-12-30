@@ -1,7 +1,9 @@
 #include "widget2.h"
+#include "detectcolor.h"
 #include <iostream>
 #include <cstdio>
 #include <QApplication>
+#include <QCommandLineParser>
 
 int main(int argc, char *argv[])
 {

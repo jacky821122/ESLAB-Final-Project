@@ -1,24 +1,27 @@
 #include "widget2.h"
 #include "sliderwidget.h"
+#include "detectcolor.h"
 #include <iostream>
 #include <QPoint>
 #include <QRect>
 #include <QApplication>
 
 using namespace cv;
+using namespace std;
 
-QImage Mat2QImage(const Mat3b &src);
+extern QImage Mat2QImage(const Mat3b &src);
 Mat QImage2Mat(const QImage &inImage);
 void chromakey(const Mat, const Mat, Mat*);
 
-double red_l, red_h;
-double green_l, green_h;
-double blue_l, blue_h;
+extern double red_l, red_h;
+extern double green_l, green_h;
+extern double blue_l, blue_h;
 
 widget2::widget2(QWidget *parent): cap(0)
 {
 	/*----------Initializing Everything-----------*/
 	swidget = new sliderwidget(this);
+	subqlabel = new SubQLabel();
 	showqbackimg = new QLabel(this);
 	showcap = new QLabel(this);
 	showqresult = new QLabel(this);
@@ -36,7 +39,7 @@ widget2::widget2(QWidget *parent): cap(0)
 
 	/*-----------------Setup Timer-----------------*/
 	timer = new QTimer(this);
-	timer -> start(30);
+	timer -> start(100);
 	connect(timer, SIGNAL(timeout()), this, SLOT(camera_caping()));
 
 	/*-----------------Setup The Result Image Label-----------------*/
@@ -71,6 +74,14 @@ void widget2::camera_caping()
 	blue_l = swidget -> blue_low->sliderPosition();
 	blue_h = swidget -> blue_high->sliderPosition();
 
+/*		red_l = subqlabel -> red ;
+		red_h = subqlabel -> red + 50;
+		green_l = subqlabel -> green ;
+		green_h = subqlabel -> green + 50;
+		blue_l = subqlabel -> blue ;
+		blue_h = subqlabel -> blue + 50;
+*/
+
 	/*--------------Convert the BG to RGB888 then CV_8UC3---------------*/ 
 	qbackimg = qbackimg.convertToFormat(QImage::Format_RGB888); //RGB888 (=) CV_8UC3
 	cbackimg = QImage2Mat(qbackimg);
@@ -82,7 +93,14 @@ void widget2::camera_caping()
 }
 
 void widget2::capture()
-{}
+{
+	subqlabel -> qcapimg = Mat2QImage(ccapimg);
+	subqlabel -> setPixmap(QPixmap::fromImage(subqlabel->qcapimg).scaled(capsize));
+  	subqlabel -> resize(capsize);
+  	subqlabel -> image_test = subqlabel -> qcapimg;
+	subqlabel -> show();
+}
+
 
 widget2::~widget2()
 {}
@@ -112,17 +130,6 @@ void chromakey(const Mat cbackimg, const Mat ccapimg, Mat *dst){
 			}
 		}
 	}
-}
-
-QImage Mat2QImage(const Mat3b &src) {
-	QImage dest(src.cols, src.rows, QImage::Format_RGB32);
-	for (int y = 0; y < src.rows; ++y)
-	{
-		const Vec3b *srcrow = src[y];
-		QRgb *destrow = (QRgb*)dest.scanLine(y);
-		for (int x = 0; x < src.cols; ++x) destrow[x] = qRgba(srcrow[x][2], srcrow[x][1], srcrow[x][0], 255);
-	}
-	return dest;
 }
 
 Mat QImage2Mat(const QImage &inImage)

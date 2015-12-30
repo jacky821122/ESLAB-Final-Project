@@ -11,8 +11,9 @@
 #include "opencv2/imgproc/imgproc.hpp"
 
 class sliderwidget;
+class SubQLabel;
 
-class widget2 : public QWidget
+class widget2: public QWidget
 {
 	Q_OBJECT
 protected:
@@ -20,13 +21,15 @@ public:
 	widget2(QWidget *parent = 0);
 	~widget2();
 	sliderwidget *swidget;
+	SubQLabel *subqlabel;
 	QSize capsize;
-	QLabel *showcap, *showqbackimg, *showqresult, *showcapture;
+	QLabel   *showcap,*showqbackimg, *showqresult, *showcapture;
 	QImage qcapimg, qbackimg, qresult;
 	QTimer *timer;
 	QPushButton *bt_pannel, *bt_capture;
+	QPushButton *bt0, *bt1;
 	cv::VideoCapture cap;
-	cv::Mat ccapimg, cbackimg, cresult;
+	cv::Mat ccapimg, cbackimg, cresult, cshowRGB;
 
 	public slots:
 	void camera_caping();
@@ -35,3 +38,4 @@ public:
 };
 
 #endif
+

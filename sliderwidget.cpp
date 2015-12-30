@@ -1,4 +1,6 @@
 #include "sliderwidget.h"
+#include "detectcolor.h"
+#include "widget2.h"
 #include <QGridLayout>
 
 sliderwidget::sliderwidget(QWidget *parent)
