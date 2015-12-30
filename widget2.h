@@ -10,6 +10,8 @@
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
 
+class SubQLabel;
+
 class widget2: public QWidget
 {
 	Q_OBJECT
@@ -17,19 +19,23 @@ protected:
 public:
 	widget2(QWidget *parent = 0);
 	~widget2();
+	SubQLabel *subqlabel;
 	QSize capsize;
-	QLabel *showcap, *showqbackimg, *showqresult, *showcapture;
+	QLabel   *showcap,*showqbackimg, *showqresult, *showcapture;
 	QImage qcapimg, qbackimg, qresult;
 	QTimer *timer;
 	QPushButton *bt0, *bt1;
+
 	int delta;
 	cv::VideoCapture cap;
-	cv::Mat ccapimg, cbackimg, cresult;
+	cv::Mat ccapimg, cbackimg, cresult, cshowRGB;
 
 	public slots:
 	void camera_caping();
 	void capture();
 	void change_bg();
+
 };
 
 #endif
+

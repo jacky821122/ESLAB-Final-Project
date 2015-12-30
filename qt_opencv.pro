@@ -6,7 +6,12 @@ TEMPLATE = app
 TARGET = qt_opencv
 INCLUDEPATH += .
 QT += widgets
+qtHaveModule(printsupport): QT += printsupport
 
 # Input
+HEADERS       = detectcolor.h
+SOURCES       = detectcolor.cpp \
+                
 HEADERS += widget2.h
 SOURCES += main.cpp widget2.cpp
+
