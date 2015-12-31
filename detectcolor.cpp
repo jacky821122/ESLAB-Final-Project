@@ -1,6 +1,6 @@
 #include <QtWidgets>
 #include <iostream> 
-#include "sliderwidget.h"
+#include "detectcolor.h"
 
 using namespace cv;
 using namespace std;

@@ -1,5 +1,6 @@
 #include "widget2.h"
 #include "sliderwidget.h"
+#include "detectcolor.h"
 #include <iostream>
 #include <QPoint>
 #include <QRect>
@@ -20,17 +21,10 @@ widget2::widget2(QWidget *parent): cap(0)
 {
 	/*----------Initializing Everything-----------*/
 	swidget = new sliderwidget(this);
-	subqlabel = new SubQLabel();
+	subqlabel = new SubQLabel(this);
 	showqbackimg = new QLabel(this);
 	showcap = new QLabel(this);
 	showqresult = new QLabel(this);
-
-	connect(subqlabel, SIGNAL(red_low_Changed( const int&)), swidget->red_low, SLOT(setValue(int)));
-	connect(subqlabel, SIGNAL(red_high_Changed( const int&)), swidget->red_high, SLOT(setValue(int)));
-	connect(subqlabel, SIGNAL(green_low_Changed( const int&)), swidget->green_low, SLOT(setValue(int)));
-	connect(subqlabel, SIGNAL(green_high_Changed( const int&)), swidget->green_high, SLOT(setValue(int)));
-	connect(subqlabel, SIGNAL(blue_low_Changed( const int&)), swidget->blue_low, SLOT(setValue(int)));
-	connect(subqlabel, SIGNAL(blue_high_Changed( const int&)), swidget->blue_high, SLOT(setValue(int)));
 
 	/*----------Setup the Size of Images and Windows-----------*/
 	capsize = QSize(532, 399);
@@ -66,6 +60,14 @@ widget2::widget2(QWidget *parent): cap(0)
 
 	/*-----------------Setup The Backing Image-----------------*/
 	qbackimg = QImage("1new.jpg");
+
+	/*-----------------Setup The Connection between Slider and Mouse Detecting-----------------*/
+	connect(subqlabel, SIGNAL(red_low_Changed( const int&)), swidget->red_low, SLOT(setValue(int)));
+	connect(subqlabel, SIGNAL(red_high_Changed( const int&)), swidget->red_high, SLOT(setValue(int)));
+	connect(subqlabel, SIGNAL(green_low_Changed( const int&)), swidget->green_low, SLOT(setValue(int)));
+	connect(subqlabel, SIGNAL(green_high_Changed( const int&)), swidget->green_high, SLOT(setValue(int)));
+	connect(subqlabel, SIGNAL(blue_low_Changed( const int&)), swidget->blue_low, SLOT(setValue(int)));
+	connect(subqlabel, SIGNAL(blue_high_Changed( const int&)), swidget->blue_high, SLOT(setValue(int)));
 }
 
 void widget2::camera_caping()

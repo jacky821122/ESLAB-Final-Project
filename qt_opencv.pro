@@ -9,5 +9,5 @@ QT += widgets
 qtHaveModule(printsupport): QT += printsupport
 
 # Input
-HEADERS += sliderwidget.h widget2.h
+HEADERS += sliderwidget.h widget2.h detectcolor.h
 SOURCES += main.cpp sliderwidget.cpp detectcolor.cpp widget2.cpp
