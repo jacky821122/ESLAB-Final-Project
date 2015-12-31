@@ -20,8 +20,8 @@ extern double blue_l, blue_h;
 widget2::widget2(QWidget *parent): cap(0)
 {
 	/*----------Initializing Everything-----------*/
-	swidget = new sliderwidget(this);
-	subqlabel = new SubQLabel(this);
+	swidget = new sliderwidget();
+	subqlabel = new SubQLabel();
 	showqbackimg = new QLabel(this);
 	showcap = new QLabel(this);
 	showqresult = new QLabel(this);
