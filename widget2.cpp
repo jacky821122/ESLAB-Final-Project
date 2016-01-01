@@ -1,4 +1,4 @@
-/**/#include "widget2.h"
+#include "widget2.h"
 #include "sliderwidget.h"
 #include "detectcolor.h"
 #include <iostream>
@@ -14,7 +14,6 @@
 #include <QStandardPaths>
 #include <QImageReader>
 
-
 using namespace cv;
 using namespace std;
 
@@ -25,7 +24,6 @@ void chromakey(const Mat, const Mat, Mat*);
 extern double red_l, red_h;
 extern double green_l, green_h;
 extern double blue_l, blue_h;
-
 int recount;
 
 widget2::widget2(QWidget *parent): cap(0)
@@ -81,7 +79,6 @@ widget2::widget2(QWidget *parent): cap(0)
 	bt_background = new QPushButton(tr("&Open"), this);
 	bt_background -> setGeometry(84, 180, 100, 40);
 	connect(bt_background, SIGNAL(clicked()), this, SLOT(open()));
-	//qbackimg = QImage("1new.jpg");
 
 	/*-----------------Setup Video Saving Button-----------------*/
 	bt_record = new QPushButton(tr("&Record"), this);
@@ -196,6 +193,7 @@ void widget2::camera_caping()
 
 void widget2::capture()
 {
+	subqlabel -> setHidden(true);
 	subqlabel -> qcapimg = Mat2QImage(ccapimg);
 	subqlabel -> setPixmap(QPixmap::fromImage(subqlabel->qcapimg).scaled(capsize));
   	subqlabel -> resize(capsize);
@@ -210,11 +208,11 @@ void widget2::capture()
 
   	subqlabel -> image_test = subqlabel -> qcapimg;
 	subqlabel -> show();
-
 }
 
 void widget2::control_pannel_pop()
 {
+	swidget -> setHidden(true);
 	swidget -> show();
 }
 
