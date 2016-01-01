@@ -32,10 +32,16 @@ public:
 	cv::VideoCapture cap;
 	cv::Mat ccapimg, cbackimg, cresult, cshowRGB;
 
+	QPushButton *bt_background;
+	bool loadFile(const QString &);
+
+
+
 	public slots:
 	void camera_caping();
 	void capture();
 	void control_pannel_pop();
+	void open();
 };
 
 #endif

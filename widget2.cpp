@@ -7,6 +7,14 @@
 #include <QString>
 #include <QApplication>
 
+#include <QString>
+#include <QFileDialog>
+#include <QStringList>
+#include <QMessageBox>
+#include <QStandardPaths>
+#include <QImageReader>
+
+
 using namespace cv;
 using namespace std;
 
@@ -63,6 +71,10 @@ widget2::widget2(QWidget *parent): cap(0)
 
 	/*-----------------Setup The Backing Image-----------------*/
 	qbackimg = QImage("1new.jpg");
+	bt_background = new QPushButton("&Open", this);
+	bt_background -> setGeometry(84, 220, 100, 50);
+	connect(bt_background, SIGNAL(clicked()), this, SLOT(open()));
+	//qbackimg = QImage("1new.jpg");
 
 	/*-----------------Setup The Connection between Slider and Mouse Detecting-----------------*/
 	connect(subqlabel, SIGNAL(red_low_Changed( const int&)), swidget->red_low, SLOT(setValue(int)));
@@ -77,6 +89,41 @@ widget2::widget2(QWidget *parent): cap(0)
 	showRGB -> setGeometry(5, 220, 300, 20);
 	showRGB -> setFont(QFont("Droid Sans Fallback", 15, QFont::Bold));
 	
+}
+
+
+bool widget2::loadFile(const QString &fileName)
+{
+    	QImageReader reader(fileName);
+    	reader.setAutoDetectImageFormat(true);
+    	const QImage image = reader.read();
+    	if (image.isNull()) {
+        		QMessageBox::information(this, QGuiApplication::applicationDisplayName(),
+                      	tr("Cannot load %1.").arg(QDir::toNativeSeparators(fileName)));
+        	setWindowFilePath(QString());
+        	return false;
+    	}
+
+    	qbackimg = image;
+
+    	return true;
+}
+
+
+void widget2::open()
+{
+    	QStringList mimeTypeFilters;
+    	foreach (const QByteArray &mimeTypeName, QImageReader::supportedMimeTypes())
+        	mimeTypeFilters.append(mimeTypeName);
+    	mimeTypeFilters.sort();
+    	const QStringList picturesLocations = QStandardPaths::standardLocations(QStandardPaths::PicturesLocation);
+    	QFileDialog dialog(this, tr("Open File"),
+             picturesLocations.isEmpty() ? QDir::currentPath() : picturesLocations.last());
+    	dialog.setAcceptMode(QFileDialog::AcceptOpen);
+   	dialog.setMimeTypeFilters(mimeTypeFilters);
+    	dialog.selectMimeTypeFilter("image/jpeg");
+
+    	while (dialog.exec() == QDialog::Accepted && !loadFile(dialog.selectedFiles().first())) {}
 }
 
 void widget2::camera_caping()
