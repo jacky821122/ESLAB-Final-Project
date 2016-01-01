@@ -26,6 +26,8 @@ extern double red_l, red_h;
 extern double green_l, green_h;
 extern double blue_l, blue_h;
 
+int recount;
+
 widget2::widget2(QWidget *parent): cap(0)
 {
 	/*----------Initializing Everything-----------*/
@@ -36,7 +38,7 @@ widget2::widget2(QWidget *parent): cap(0)
 	showqresult = new QLabel(this);
 	showSelectColor = new QLabel(this);
 	showRGB = new QLabel(this);
-	recTime = new QTimer(this);
+	recount = 0;
 
 	/*----------Setup the Size of Images and Windows-----------*/
 	capsize = QSize(532, 399);
@@ -53,6 +55,10 @@ widget2::widget2(QWidget *parent): cap(0)
 	timer = new QTimer(this);
 	timer -> start(30);
 	connect(timer, SIGNAL(timeout()), this, SLOT(camera_caping()));
+	
+	/*-----------------Setup Record Timer-----------------*/
+	recTime = new QTimer(this);
+	connect(recTime, SIGNAL(timeout()), this, SLOT(record()));
 
 	/*-----------------Setup The Result Image Label-----------------*/
 	QPoint point = QPoint(268, 0);
@@ -78,9 +84,15 @@ widget2::widget2(QWidget *parent): cap(0)
 	//qbackimg = QImage("1new.jpg");
 
 	/*-----------------Setup Video Saving Button-----------------*/
-	bt_video = new QPushButton(tr("&Record"), this);
-	bt_video -> setGeometry(84, 310, 100, 50);
-	connect(bt_video, SIGNAL(clicked()), this, SLOT(recording()));
+	bt_record = new QPushButton(tr("&Record"), this);
+	bt_record -> setGeometry(84, 310, 100, 50);
+	connect(bt_record, SIGNAL(clicked()), this, SLOT(recording()));
+
+	/*-----------------Setup Video Saving Stop Button-----------------*/
+	bt_record_stop = new QPushButton(tr("&Stop"), this);
+	bt_record_stop -> setGeometry(84, 310, 100, 50);
+	bt_record_stop -> setHidden(true);
+	connect(bt_record_stop, SIGNAL(clicked()), this, SLOT(stop_record()));
 
 	/*-----------------Setup The Connection between Slider and Mouse Detecting-----------------*/
 	connect(subqlabel, SIGNAL(red_low_Changed( const int&)), swidget->red_low, SLOT(setValue(int)));
@@ -202,18 +214,30 @@ void widget2::control_pannel_pop()
 
 void widget2::recording()
 {
+	recount = 1;
 	double dWidth = cap.get(CV_CAP_PROP_FRAME_WIDTH);
 	double dHeight = cap.get(CV_CAP_PROP_FRAME_HEIGHT);
 	Size frameSize(static_cast<int>(dWidth), static_cast<int>(dHeight));
-	oVideoWriter = VideoWriter ("MyVideo.avi", CV_FOURCC('P','I','M','1'), 20, frameSize, true);
-	connect(recTime, SIGNAL(timeout()), this, SLOT(record()));
+	writer = VideoWriter ("MyVideo.avi", CV_FOURCC('P','I','M','1'), 20, frameSize, true);
 	recTime -> start(30);
+	bt_record -> setHidden(true);
+	bt_record_stop -> setHidden(false);
 }
 
 void widget2::record()
 {
-	std::cout << "Finishing Recording!" << endl;
-	oVideoWriter.write(ccapimg);
+	if (recount == 1) writer.write(ccapimg);
+	else
+	{
+		recTime -> stop();
+		bt_record_stop -> setHidden(true);
+		bt_record -> setHidden(false);
+	}
+}
+
+void widget2::stop_record()
+{
+	recount = 0;
 }
 
 void widget2::closeEvent(QCloseEvent *event)

@@ -27,11 +27,11 @@ public:
 	QLabel   *showcap,*showqbackimg, *showqresult, *showcapture, *showSelectColor, *showRGB;
 	QImage qcapimg, qbackimg, qresult;
 	QTimer *timer, *recTime;
-	QPushButton *bt_pannel, *bt_capture, *bt_video;
+	QPushButton *bt_pannel, *bt_capture, *bt_record, *bt_record_stop;
 	QPushButton *bt0, *bt1;
 	cv::VideoCapture cap;
 	cv::Mat ccapimg, cbackimg, cresult, cshowRGB;
-	cv::VideoWriter oVideoWriter;
+	cv::VideoWriter writer;
 
 	QPushButton *bt_background;
 	bool loadFile(const QString &);
@@ -43,6 +43,7 @@ public:
 	void open();
 	void record();
 	void recording();
+	void stop_record();
 };
 
 #endif
