@@ -36,6 +36,7 @@ widget2::widget2(QWidget *parent): cap(0)
 	showqresult = new QLabel(this);
 	showSelectColor = new QLabel(this);
 	showRGB = new QLabel(this);
+	recTime = new QTimer(this);
 
 	/*----------Setup the Size of Images and Windows-----------*/
 	capsize = QSize(532, 399);
@@ -60,21 +61,26 @@ widget2::widget2(QWidget *parent): cap(0)
 	showqbackimg -> setGeometry(rect);
 
 	/*-----------------Setup The Switch Button-----------------*/
-	bt_pannel = new QPushButton("&Color Select", this);
+	bt_pannel = new QPushButton(tr("&Color Select"), this);
 	bt_pannel -> setGeometry(84, 40, 100, 50);
 	connect(bt_pannel, SIGNAL(clicked()), this, SLOT(control_pannel_pop()));
 
 	/*-----------------Setup The Capture Button-----------------*/
-	bt_capture = new QPushButton("&Capture", this);
+	bt_capture = new QPushButton(("&Capture"), this);
 	bt_capture -> setGeometry(84, 130, 100, 50);
 	connect(bt_capture, SIGNAL(clicked()), this, SLOT(capture()));
 
 	/*-----------------Setup The Backing Image-----------------*/
 	qbackimg = QImage("1new.jpg");
-	bt_background = new QPushButton("&Open", this);
+	bt_background = new QPushButton(tr("&Open"), this);
 	bt_background -> setGeometry(84, 220, 100, 50);
 	connect(bt_background, SIGNAL(clicked()), this, SLOT(open()));
 	//qbackimg = QImage("1new.jpg");
+
+	/*-----------------Setup Video Saving Button-----------------*/
+	bt_video = new QPushButton(tr("&Record"), this);
+	bt_video -> setGeometry(84, 310, 100, 50);
+	connect(bt_video, SIGNAL(clicked()), this, SLOT(recording()));
 
 	/*-----------------Setup The Connection between Slider and Mouse Detecting-----------------*/
 	connect(subqlabel, SIGNAL(red_low_Changed( const int&)), swidget->red_low, SLOT(setValue(int)));
@@ -192,6 +198,22 @@ void widget2::capture()
 void widget2::control_pannel_pop()
 {
 	swidget -> show();
+}
+
+void widget2::recording()
+{
+	double dWidth = cap.get(CV_CAP_PROP_FRAME_WIDTH);
+	double dHeight = cap.get(CV_CAP_PROP_FRAME_HEIGHT);
+	Size frameSize(static_cast<int>(dWidth), static_cast<int>(dHeight));
+	oVideoWriter = VideoWriter ("MyVideo.avi", CV_FOURCC('P','I','M','1'), 20, frameSize, true);
+	connect(recTime, SIGNAL(timeout()), this, SLOT(record()));
+	recTime -> start(30);
+}
+
+void widget2::record()
+{
+	std::cout << "Finishing Recording!" << endl;
+	oVideoWriter.write(ccapimg);
 }
 
 void widget2::closeEvent(QCloseEvent *event)

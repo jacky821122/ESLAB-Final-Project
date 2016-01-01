@@ -26,22 +26,23 @@ public:
 	QSize capsize;
 	QLabel   *showcap,*showqbackimg, *showqresult, *showcapture, *showSelectColor, *showRGB;
 	QImage qcapimg, qbackimg, qresult;
-	QTimer *timer;
-	QPushButton *bt_pannel, *bt_capture;
+	QTimer *timer, *recTime;
+	QPushButton *bt_pannel, *bt_capture, *bt_video;
 	QPushButton *bt0, *bt1;
 	cv::VideoCapture cap;
 	cv::Mat ccapimg, cbackimg, cresult, cshowRGB;
+	cv::VideoWriter oVideoWriter;
 
 	QPushButton *bt_background;
 	bool loadFile(const QString &);
-
-
 
 	public slots:
 	void camera_caping();
 	void capture();
 	void control_pannel_pop();
 	void open();
+	void record();
+	void recording();
 };
 
 #endif
