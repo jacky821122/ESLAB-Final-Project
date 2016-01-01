@@ -33,11 +33,11 @@ widget2::widget2(QWidget *parent): cap(0)
 	/*----------Initializing Everything-----------*/
 	swidget = new sliderwidget();
 	subqlabel = new SubQLabel();
+	showSelectColor = new QLabel(this);
+	showRGB = new QLabel(this);
 	showqbackimg = new QLabel(this);
 	showcap = new QLabel(this);
 	showqresult = new QLabel(this);
-	showSelectColor = new QLabel(this);
-	showRGB = new QLabel(this);
 	recount = 0;
 
 	/*----------Setup the Size of Images and Windows-----------*/
@@ -68,31 +68,36 @@ widget2::widget2(QWidget *parent): cap(0)
 
 	/*-----------------Setup The Switch Button-----------------*/
 	bt_pannel = new QPushButton(tr("&Color Select"), this);
-	bt_pannel -> setGeometry(84, 40, 100, 50);
+	bt_pannel -> setGeometry(84, 40, 100, 40);
 	connect(bt_pannel, SIGNAL(clicked()), this, SLOT(control_pannel_pop()));
 
 	/*-----------------Setup The Capture Button-----------------*/
 	bt_capture = new QPushButton(("&Capture"), this);
-	bt_capture -> setGeometry(84, 130, 100, 50);
+	bt_capture -> setGeometry(84, 110, 100, 40);
 	connect(bt_capture, SIGNAL(clicked()), this, SLOT(capture()));
 
 	/*-----------------Setup The Backing Image-----------------*/
 	qbackimg = QImage("1new.jpg");
 	bt_background = new QPushButton(tr("&Open"), this);
-	bt_background -> setGeometry(84, 220, 100, 50);
+	bt_background -> setGeometry(84, 180, 100, 40);
 	connect(bt_background, SIGNAL(clicked()), this, SLOT(open()));
 	//qbackimg = QImage("1new.jpg");
 
 	/*-----------------Setup Video Saving Button-----------------*/
 	bt_record = new QPushButton(tr("&Record"), this);
-	bt_record -> setGeometry(84, 310, 100, 50);
+	bt_record -> setGeometry(84, 250, 100, 40);
 	connect(bt_record, SIGNAL(clicked()), this, SLOT(recording()));
 
 	/*-----------------Setup Video Saving Stop Button-----------------*/
 	bt_record_stop = new QPushButton(tr("&Stop"), this);
-	bt_record_stop -> setGeometry(84, 310, 100, 50);
+	bt_record_stop -> setGeometry(84, 250, 100, 40);
 	bt_record_stop -> setHidden(true);
 	connect(bt_record_stop, SIGNAL(clicked()), this, SLOT(stop_record()));
+
+	/*-----------------Setup Image Button-----------------*/
+	bt_saveimage = new QPushButton("&Save image", this);
+	bt_saveimage -> setGeometry(84, 320, 100, 40);
+	connect(bt_saveimage, SIGNAL(clicked()), this, SLOT(saveimage()));
 
 	/*-----------------Setup The Connection between Slider and Mouse Detecting-----------------*/
 	connect(subqlabel, SIGNAL(red_low_Changed( const int&)), swidget->red_low, SLOT(setValue(int)));
@@ -103,8 +108,9 @@ widget2::widget2(QWidget *parent): cap(0)
 	connect(subqlabel, SIGNAL(blue_high_Changed( const int&)), swidget->blue_high, SLOT(setValue(int)));
 
 	/*-----------------Setup Select Color Display-----------------*/
-	showSelectColor -> setGeometry(0, 250, 150, 150);
-	showRGB -> setGeometry(5, 220, 300, 20);
+	showSelectColor -> setGeometry(0, 0, 800, 400);
+	// showSelectColor -> setGeometry(0, 250, 150, 150);
+	showRGB -> setGeometry(20, 5, 300, 20);
 	showRGB -> setFont(QFont("Droid Sans Fallback", 15, QFont::Bold));
 	
 }
@@ -172,9 +178,9 @@ void widget2::camera_caping()
 	showqresult -> setPixmap(QPixmap::fromImage(qresult).scaled(capsize));
 
 	/*-----------------Setup Select Color Display-----------------*/
-	QPixmap *tmpix = new QPixmap(200, 200);
+	QPixmap *tmpix = new QPixmap(800, 400);
 	tmpix -> fill(QColor::fromRgb(subqlabel->red, subqlabel->green, subqlabel->blue));
-	showSelectColor -> setPixmap(tmpix->scaled(150, 150));
+	showSelectColor -> setPixmap(tmpix->scaled(800, 400));
 	QString str, str1, str2, str3;
 	str1 = QString("RGB : ( ");
 	str3 = str3.setNum(subqlabel->red);
@@ -214,25 +220,33 @@ void widget2::control_pannel_pop()
 
 void widget2::recording()
 {
-	recount = 1;
+	/*recount = 1;
 	double dWidth = cap.get(CV_CAP_PROP_FRAME_WIDTH);
 	double dHeight = cap.get(CV_CAP_PROP_FRAME_HEIGHT);
 	Size frameSize(static_cast<int>(dWidth), static_cast<int>(dHeight));
 	writer = VideoWriter ("MyVideo.avi", CV_FOURCC('P','I','M','1'), 20, frameSize, true);
 	recTime -> start(30);
 	bt_record -> setHidden(true);
-	bt_record_stop -> setHidden(false);
+	bt_record_stop -> setHidden(false);*/
 }
 
 void widget2::record()
 {
-	if (recount == 1) writer.write(ccapimg);
+	/*if (recount == 1) writer.write(cresult);
 	else
 	{
 		recTime -> stop();
 		bt_record_stop -> setHidden(true);
 		bt_record -> setHidden(false);
-	}
+	}*/
+}
+
+void widget2::saveimage(){
+
+	/*vector<int> compression_params; 
+	compression_params.push_back(CV_IMWRITE_JPEG_QUALITY); 
+     	compression_params.push_back(98); 
+     	imwrite("TestImage.jpg", cresult, compression_params);*/ 
 }
 
 void widget2::stop_record()

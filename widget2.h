@@ -33,7 +33,7 @@ public:
 	cv::Mat ccapimg, cbackimg, cresult, cshowRGB;
 	cv::VideoWriter writer;
 
-	QPushButton *bt_background;
+	QPushButton *bt_background, *bt_saveimage;
 	bool loadFile(const QString &);
 
 	public slots:
@@ -44,6 +44,7 @@ public:
 	void record();
 	void recording();
 	void stop_record();
+	void saveimage();
 };
 
 #endif
