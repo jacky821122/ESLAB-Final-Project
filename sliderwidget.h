@@ -4,6 +4,7 @@
 #include <QSlider>
 #include <QLabel>
 #include <QSpinBox>
+#include <QPushButton>
 
 class sliderwidget : public QWidget
 {
@@ -30,10 +31,9 @@ public:
 	QSpinBox *green_high_spinbox;
 	QSpinBox *blue_low_spinbox;
 	QSpinBox *blue_high_spinbox;
+	QPushButton *restoreBt, *closeBt;
 public slots:
-	// void setred_l( const int &)
-	// void changeValue(int);
-
+	void restore();
 };
 
 #endif

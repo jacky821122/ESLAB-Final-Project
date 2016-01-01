@@ -17,13 +17,14 @@ class widget2: public QWidget
 {
 	Q_OBJECT
 protected:
+	void closeEvent(QCloseEvent *event);
 public:
 	widget2(QWidget *parent = 0);
 	~widget2();
 	sliderwidget *swidget;
 	SubQLabel *subqlabel;
 	QSize capsize;
-	QLabel   *showcap,*showqbackimg, *showqresult, *showcapture;
+	QLabel   *showcap,*showqbackimg, *showqresult, *showcapture, *showSelectColor, *showRGB;
 	QImage qcapimg, qbackimg, qresult;
 	QTimer *timer;
 	QPushButton *bt_pannel, *bt_capture;
@@ -35,6 +36,7 @@ public:
 	void camera_caping();
 	void capture();
 	void control_pannel_pop();
+	// void updateSlider();
 };
 
 #endif

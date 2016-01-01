@@ -1,7 +1,7 @@
 #include "sliderwidget.h"
 #include <QGridLayout>
 
-sliderwidget::sliderwidget(QWidget *parent)
+sliderwidget::sliderwidget(QWidget *parent) : QWidget(parent)
 {
 	red_low_label = new QLabel(tr("Red Low"));
 	red_high_label = new QLabel(tr("Red High"));
@@ -54,6 +54,9 @@ sliderwidget::sliderwidget(QWidget *parent)
 	blue_high_spinbox -> setRange(0, 255);
 	blue_high_spinbox -> setSingleStep(1);
 
+	closeBt = new QPushButton(tr("&Close"));
+	restoreBt = new QPushButton(tr("&Restore"));
+
 	connect(red_low_spinbox, SIGNAL(valueChanged(int)), red_low, SLOT(setValue(int)));
 	connect(red_low, SIGNAL(valueChanged(int)), red_low_spinbox, SLOT(setValue(int)));
 	connect(red_high_spinbox, SIGNAL(valueChanged(int)), red_high, SLOT(setValue(int)));
@@ -66,6 +69,9 @@ sliderwidget::sliderwidget(QWidget *parent)
 	connect(blue_low, SIGNAL(valueChanged(int)), blue_low_spinbox, SLOT(setValue(int)));
 	connect(blue_high_spinbox, SIGNAL(valueChanged(int)), blue_high, SLOT(setValue(int)));
 	connect(blue_high, SIGNAL(valueChanged(int)), blue_high_spinbox, SLOT(setValue(int)));
+
+	connect(closeBt, SIGNAL(clicked()), this, SLOT(close()));
+	connect(restoreBt, SIGNAL(clicked()), this, SLOT(restore()));
 
 	QGridLayout *layout = new QGridLayout();
 	layout -> addWidget(red_low_label, 0, 0);
@@ -86,10 +92,22 @@ sliderwidget::sliderwidget(QWidget *parent)
 	layout -> addWidget(blue_high_label, 5, 0);
 	layout -> addWidget(blue_high, 5, 1);
 	layout -> addWidget(blue_high_spinbox, 5, 2);
+	layout -> addWidget(restoreBt, 6, 0, 1, 3);
+	layout -> addWidget(closeBt, 7, 0, 1, 3);
 
 	this -> setLayout(layout);
 	this -> resize(300, 200);
 	this -> setWindowTitle("Control Pannel");
+}
+
+void sliderwidget::restore()
+{
+	red_low -> setValue(0);
+	red_high -> setValue(0);
+	green_low -> setValue(0);
+	green_high -> setValue(0);
+	blue_low -> setValue(0);
+	blue_high -> setValue(0);
 }
 
 sliderwidget::~sliderwidget()

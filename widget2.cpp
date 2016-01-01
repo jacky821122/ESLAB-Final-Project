@@ -4,6 +4,7 @@
 #include <iostream>
 #include <QPoint>
 #include <QRect>
+#include <QString>
 #include <QApplication>
 
 using namespace cv;
@@ -25,6 +26,8 @@ widget2::widget2(QWidget *parent): cap(0)
 	showqbackimg = new QLabel(this);
 	showcap = new QLabel(this);
 	showqresult = new QLabel(this);
+	showSelectColor = new QLabel(this);
+	showRGB = new QLabel(this);
 
 	/*----------Setup the Size of Images and Windows-----------*/
 	capsize = QSize(532, 399);
@@ -68,11 +71,22 @@ widget2::widget2(QWidget *parent): cap(0)
 	connect(subqlabel, SIGNAL(green_high_Changed( const int&)), swidget->green_high, SLOT(setValue(int)));
 	connect(subqlabel, SIGNAL(blue_low_Changed( const int&)), swidget->blue_low, SLOT(setValue(int)));
 	connect(subqlabel, SIGNAL(blue_high_Changed( const int&)), swidget->blue_high, SLOT(setValue(int)));
+
+	/*-----------------Setup Select Color Display-----------------*/
+	showSelectColor -> setGeometry(0, 250, 150, 150);
+	showRGB -> setGeometry(5, 220, 300, 20);
+	showRGB -> setFont(QFont("Droid Sans Fallback", 15, QFont::Bold));
+	
 }
 
 void widget2::camera_caping()
 {
 	cap >> ccapimg; //CV_8UC3
+
+	/*--------------For Testing---------------*/
+	/*qcapimg = QImage("ahah.png");
+	qcapimg = qcapimg.convertToFormat(QImage::Format_RGB888);
+	ccapimg = QImage2Mat(qcapimg);*/
 
 	/*--------------Get Color Information---------------*/ 
 	red_l = swidget -> red_low->sliderPosition();
@@ -85,11 +99,29 @@ void widget2::camera_caping()
 	/*--------------Convert the BG to RGB888 then CV_8UC3---------------*/ 
 	qbackimg = qbackimg.convertToFormat(QImage::Format_RGB888); //RGB888 (=) CV_8UC3
 	cbackimg = QImage2Mat(qbackimg);
+
+	/*-----------------Implement Chroma Key-----------------*/	
 	chromakey(cbackimg, ccapimg, &cresult);
 	
 	/*-----------------Show the Result Image-----------------*/
 	qresult = Mat2QImage(cresult);
 	showqresult -> setPixmap(QPixmap::fromImage(qresult).scaled(capsize));
+
+	/*-----------------Setup Select Color Display-----------------*/
+	QPixmap *tmpix = new QPixmap(200, 200);
+	tmpix -> fill(QColor::fromRgb(subqlabel->red, subqlabel->green, subqlabel->blue));
+	showSelectColor -> setPixmap(tmpix->scaled(150, 150));
+	QString str, str1, str2, str3;
+	str1 = QString("RGB : ( ");
+	str3 = str3.setNum(subqlabel->red);
+	str3.append(",");
+	str3.append(str2.setNum(subqlabel->green));
+	str3.append(",");
+	str3.append(str2.setNum(subqlabel->blue));
+	str3.append(" )");
+	str.append(str1);
+	str.append(str3);
+	showRGB -> setText(str);
 }
 
 void widget2::capture()
@@ -97,18 +129,33 @@ void widget2::capture()
 	subqlabel -> qcapimg = Mat2QImage(ccapimg);
 	subqlabel -> setPixmap(QPixmap::fromImage(subqlabel->qcapimg).scaled(capsize));
   	subqlabel -> resize(capsize);
+
+	QPoint pos = subqlabel->pos();
+	QPoint pos1 = this->pos();
+	if (pos.x() != pos1.x())
+		pos.setX(pos1.x());
+	if (pos.y() != pos1.y())
+		pos.setY(pos1.y());
+	subqlabel->move(pos);
+
   	subqlabel -> image_test = subqlabel -> qcapimg;
 	subqlabel -> show();
+
 }
-
-
-widget2::~widget2()
-{}
 
 void widget2::control_pannel_pop()
 {
 	swidget -> show();
 }
+
+void widget2::closeEvent(QCloseEvent *event)
+{
+	qApp -> quit();
+	QWidget::closeEvent(event);
+}
+
+widget2::~widget2()
+{}
 
 void chromakey(const Mat cbackimg, const Mat ccapimg, Mat *dst){
 	*dst = Mat(cbackimg.rows, cbackimg.cols, CV_8UC3);
@@ -116,7 +163,7 @@ void chromakey(const Mat cbackimg, const Mat ccapimg, Mat *dst){
 	{
 		for(int x = 0 ; x < cbackimg.cols ; ++x)
 		{
-			if(ccapimg.at<Vec3b>(y,x)[0] >= red_l && ccapimg.at<Vec3b>(y,x)[0] <= red_h && ccapimg.at<Vec3b>(y,x)[1] >= green_l && ccapimg.at<Vec3b>(y,x)[1] <= green_h && ccapimg.at<Vec3b>(y,x)[2] >= blue_l && ccapimg.at<Vec3b>(y,x)[2] <= blue_h)
+			if(ccapimg.at<Vec3b>(y,x)[2] >= red_l && ccapimg.at<Vec3b>(y,x)[2] <= red_h && ccapimg.at<Vec3b>(y,x)[1] >= green_l && ccapimg.at<Vec3b>(y,x)[1] <= green_h && ccapimg.at<Vec3b>(y,x)[0] >= blue_l && ccapimg.at<Vec3b>(y,x)[0] <= blue_h)
 			{
 				dst->at<Vec3b>(y,x)[0] = cbackimg.at<Vec3b>(y,x)[0];
 				dst->at<Vec3b>(y,x)[1] = cbackimg.at<Vec3b>(y,x)[1];

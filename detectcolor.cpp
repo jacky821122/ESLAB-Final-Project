@@ -12,7 +12,10 @@ double blue_l, blue_h;
 
 SubQLabel::SubQLabel(QWidget *parent)
 {
-	scaleFactor = 1.0;
+	scaleFactor = 1.1083;
+	red = 0;
+	green = 0;
+	blue = 0;
 }
 
 void SubQLabel::setFactor(const double &factor){
