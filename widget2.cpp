@@ -116,12 +116,11 @@ void widget2::open()
     	foreach (const QByteArray &mimeTypeName, QImageReader::supportedMimeTypes())
         	mimeTypeFilters.append(mimeTypeName);
     	mimeTypeFilters.sort();
-    	const QStringList picturesLocations = QStandardPaths::standardLocations(QStandardPaths::PicturesLocation);
-    	QFileDialog dialog(this, tr("Open File"),
-             picturesLocations.isEmpty() ? QDir::currentPath() : picturesLocations.last());
+    	//const QStringList picturesLocations = QStandardPaths::standardLocations(QStandardPaths::PicturesLocation);
+    	QFileDialog dialog(this, tr("Open File")/*, picturesLocations.isEmpty() ? QDir::currentPath() : picturesLocations.last()*/);
     	dialog.setAcceptMode(QFileDialog::AcceptOpen);
    	dialog.setMimeTypeFilters(mimeTypeFilters);
-    	dialog.selectMimeTypeFilter("image/jpeg");
+    	dialog.selectMimeTypeFilter("image/png");
 
     	while (dialog.exec() == QDialog::Accepted && !loadFile(dialog.selectedFiles().first())) {}
 }
