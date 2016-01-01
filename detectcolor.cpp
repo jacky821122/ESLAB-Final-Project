@@ -12,7 +12,7 @@ double blue_l, blue_h;
 
 SubQLabel::SubQLabel(QWidget *parent)
 {
-	scaleFactor = 1.1083;
+	scaleFactor = 0.83125;
 	red = 0;
 	green = 0;
 	blue = 0;
@@ -36,12 +36,12 @@ void SubQLabel::mousePressEvent(QMouseEvent *event)
 		green = clrCurrent.green();
 		blue = clrCurrent.blue();
 
-		red_l =  (red > 30)? red - 30 : 0;
-		red_h = (red > 205)? 255 : red + 50;
-		green_l = (green > 30)? green - 30 : 0;
-		green_h = (green > 205)? 255 : green + 50;
-		blue_l = (blue > 30)? blue - 30 : 0;
-		blue_h = (blue > 205)? 255 : blue + 50;
+		red_l =  (red > 40)? red - 40 : 0;
+		red_h = (red > 215)? 255 : red + 40;
+		green_l = (green > 40)? green - 40 : 0;
+		green_h = (green > 215)? 255 : green + 40;
+		blue_l = (blue > 40)? blue - 40 : 0;
+		blue_h = (blue > 215)? 255 : blue + 40;
 
 		emit red_low_Changed( red_l);
 		emit red_high_Changed( red_h);

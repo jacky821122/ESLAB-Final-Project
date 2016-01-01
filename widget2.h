@@ -36,7 +36,6 @@ public:
 	void camera_caping();
 	void capture();
 	void control_pannel_pop();
-	// void updateSlider();
 };
 
 #endif

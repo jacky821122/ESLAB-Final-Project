@@ -42,7 +42,7 @@ widget2::widget2(QWidget *parent): cap(0)
 
 	/*-----------------Setup Timer-----------------*/
 	timer = new QTimer(this);
-	timer -> start(100);
+	timer -> start(30);
 	connect(timer, SIGNAL(timeout()), this, SLOT(camera_caping()));
 
 	/*-----------------Setup The Result Image Label-----------------*/
@@ -84,7 +84,7 @@ void widget2::camera_caping()
 	cap >> ccapimg; //CV_8UC3
 
 	/*--------------For Testing---------------*/
-	/*qcapimg = QImage("ahah.png");
+	/*qcapimg = QImage("ahah2.png");
 	qcapimg = qcapimg.convertToFormat(QImage::Format_RGB888);
 	ccapimg = QImage2Mat(qcapimg);*/
 
