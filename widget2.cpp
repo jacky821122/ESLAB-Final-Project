@@ -222,7 +222,7 @@ void widget2::recording()
 	double dWidth = cap.get(CV_CAP_PROP_FRAME_WIDTH);
 	double dHeight = cap.get(CV_CAP_PROP_FRAME_HEIGHT);
 	Size frameSize(static_cast<int>(dWidth), static_cast<int>(dHeight));
-	writer = VideoWriter ("videos/MyVideo.avi", CV_FOURCC('P','I','M','1'), 20, frameSize, true);
+	writer = VideoWriter ("video/MyVideo.avi", CV_FOURCC('P','I','M','1'), 20, frameSize, true);
 	recTime -> start(30);
 	bt_record -> setHidden(true);
 	bt_record_stop -> setHidden(false);
