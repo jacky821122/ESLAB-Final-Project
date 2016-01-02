@@ -36,6 +36,7 @@ widget2::widget2(QWidget *parent): cap(0)
 	showqbackimg = new QLabel(this);
 	showcap = new QLabel(this);
 	showqresult = new QLabel(this);
+	tmpix = new QPixmap(800, 400);
 	recount = 0;
 
 	/*----------Setup the Size of Images and Windows-----------*/
@@ -75,7 +76,7 @@ widget2::widget2(QWidget *parent): cap(0)
 	connect(bt_capture, SIGNAL(clicked()), this, SLOT(capture()));
 
 	/*-----------------Setup The Backing Image-----------------*/
-	qbackimg = QImage("1new.jpg");
+	qbackimg = QImage("background/1new.jpg");
 	bt_background = new QPushButton(tr("&Open"), this);
 	bt_background -> setGeometry(84, 180, 100, 40);
 	connect(bt_background, SIGNAL(clicked()), this, SLOT(open()));
@@ -138,7 +139,7 @@ void widget2::open()
         	mimeTypeFilters.append(mimeTypeName);
     	mimeTypeFilters.sort();
     	//const QStringList picturesLocations = QStandardPaths::standardLocations(QStandardPaths::PicturesLocation);
-    	QFileDialog dialog(this, tr("Open File")/*, picturesLocations.isEmpty() ? QDir::currentPath() : picturesLocations.last()*/);
+    	QFileDialog dialog(this, tr("Open File")/*, picturesLocations.isEmpty() ? QDir::currentPath() : picturesLocations.last()*/, "background/");
     	dialog.setAcceptMode(QFileDialog::AcceptOpen);
    	dialog.setMimeTypeFilters(mimeTypeFilters);
     	dialog.selectMimeTypeFilter("image/png");
@@ -175,7 +176,6 @@ void widget2::camera_caping()
 	showqresult -> setPixmap(QPixmap::fromImage(qresult).scaled(capsize));
 
 	/*-----------------Setup Select Color Display-----------------*/
-	QPixmap *tmpix = new QPixmap(800, 400);
 	tmpix -> fill(QColor::fromRgb(subqlabel->red, subqlabel->green, subqlabel->blue));
 	showSelectColor -> setPixmap(tmpix->scaled(800, 400));
 	QString str, str1, str2, str3;
@@ -222,7 +222,7 @@ void widget2::recording()
 	double dWidth = cap.get(CV_CAP_PROP_FRAME_WIDTH);
 	double dHeight = cap.get(CV_CAP_PROP_FRAME_HEIGHT);
 	Size frameSize(static_cast<int>(dWidth), static_cast<int>(dHeight));
-	writer = VideoWriter ("MyVideo.avi", CV_FOURCC('P','I','M','1'), 20, frameSize, true);
+	writer = VideoWriter ("videos/MyVideo.avi", CV_FOURCC('P','I','M','1'), 20, frameSize, true);
 	recTime -> start(30);
 	bt_record -> setHidden(true);
 	bt_record_stop -> setHidden(false);
@@ -244,7 +244,7 @@ void widget2::saveimage(){
 	vector<int> compression_params; 
 	compression_params.push_back(CV_IMWRITE_JPEG_QUALITY); 
      	compression_params.push_back(98); 
-     	imwrite("TestImage.jpg", cresult, compression_params); 
+     	imwrite("picture/TestImage.jpg", cresult, compression_params); 
 }
 
 void widget2::stop_record()

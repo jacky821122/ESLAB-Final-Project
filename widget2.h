@@ -29,6 +29,7 @@ public:
 	QTimer *timer, *recTime;
 	QPushButton *bt_pannel, *bt_capture, *bt_record, *bt_record_stop;
 	QPushButton *bt0, *bt1;
+	QPixmap *tmpix;
 	cv::VideoCapture cap;
 	cv::Mat ccapimg, cbackimg, cresult, cshowRGB;
 	cv::VideoWriter writer;
