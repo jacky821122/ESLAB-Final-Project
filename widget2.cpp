@@ -280,7 +280,7 @@ void widget2::recording()
 	recname.append(tmp);
 	recname.append("_Rec.avi");
 
-	writer -> open(recname, CV_FOURCC('P','I','M','1'), 20, frameSize, true);
+	writer -> open(recname, CV_FOURCC('D', 'I', 'V', 'X'), 10, frameSize, true);
 	recTime -> start(30);
 	bt_record -> setHidden(true);
 	bt_record_stop -> setHidden(false);
