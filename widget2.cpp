@@ -125,9 +125,24 @@ widget2::widget2(QWidget *parent): cap(0)
 	showRec -> setText("<font color='red'>∙REC</font>");
 	showRec -> setFont(QFont("Courier", 30, QFont::Bold));
 	showRec -> setGeometry(685, 5, 300, 50);
-	// connect(bt_record, SIGNAL(clicked()), this, SLOT())
+	// QTimer *test = new QTimer(this);
+	// connect(test, SIGNAL(timeout()), this SLOT(showRec_start()));
+ 	connect(bt_record, SIGNAL(clicked()), this, SLOT(showRec_start()));
 }
 
+void widget2::showRec_start()
+{
+	if (recswitch == 0) return void();
+	showRec -> setHidden(false);
+	QTimer::singleShot(700, this, SLOT(showRec_stop()));
+}
+
+void widget2::showRec_stop()
+{
+	if (recswitch == 0) return void();
+	showRec -> setHidden(true);
+	QTimer::singleShot(700, this, SLOT(showRec_start()));
+}
 
 bool widget2::loadFile(const QString &fileName)
 {
@@ -271,6 +286,7 @@ void widget2::record()
 	else
 	{
 		recTime -> stop();
+		showRec -> setHidden(true);
 		bt_record_stop -> setHidden(true);
 		bt_record -> setHidden(false);
 	}

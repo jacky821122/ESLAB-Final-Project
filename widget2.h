@@ -49,6 +49,8 @@ public:
 	void recording();
 	void stop_record();
 	void saveimage();
+	void showRec_start();
+	void showRec_stop();
 };
 
 #endif
