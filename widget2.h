@@ -1,5 +1,6 @@
 #ifndef WIDGET2_H
 #define WIDGET2_H
+#include <string>
 #include <QWidget>
 #include <QSize>
 #include <QLabel>
@@ -24,12 +25,14 @@ public:
 	sliderwidget *swidget;
 	SubQLabel *subqlabel;
 	QSize capsize;
-	QLabel   *showcap,*showqbackimg, *showqresult, *showcapture, *showSelectColor, *showRGB;
+	QLabel *showcap,*showqbackimg, *showqresult, *showcapture, *showSelectColor, *showRGB;
+	QLabel *showRec;
 	QImage qcapimg, qbackimg, qresult;
 	QTimer *timer, *recTime;
 	QPushButton *bt_pannel, *bt_capture, *bt_record, *bt_record_stop;
 	QPushButton *bt0, *bt1;
 	QPixmap *tmpix;
+	std::string recname, capname;
 	cv::VideoCapture cap;
 	cv::Mat ccapimg, cbackimg, cresult, cshowRGB;
 	cv::VideoWriter writer;

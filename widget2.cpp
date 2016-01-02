@@ -2,6 +2,8 @@
 #include "sliderwidget.h"
 #include "detectcolor.h"
 #include <iostream>
+#include <sstream>
+#include <ctime>
 #include <QPoint>
 #include <QRect>
 #include <QString>
@@ -24,7 +26,9 @@ void chromakey(const Mat, const Mat, Mat*);
 extern double red_l, red_h;
 extern double green_l, green_h;
 extern double blue_l, blue_h;
-int recount;
+int recswitch, recount, capcount;
+time_t t;
+struct tm *now;
 
 widget2::widget2(QWidget *parent): cap(0)
 {
@@ -36,8 +40,13 @@ widget2::widget2(QWidget *parent): cap(0)
 	showqbackimg = new QLabel(this);
 	showcap = new QLabel(this);
 	showqresult = new QLabel(this);
+	showRec = new QLabel(this);
 	tmpix = new QPixmap(800, 400);
-	recount = 0;
+	recswitch = 0;
+
+	/*----------For Time Stamp-----------*/	
+	recount = 1;
+	capcount = 1;
 
 	/*----------Setup the Size of Images and Windows-----------*/
 	capsize = QSize(532, 399);
@@ -71,7 +80,7 @@ widget2::widget2(QWidget *parent): cap(0)
 	connect(bt_pannel, SIGNAL(clicked()), this, SLOT(control_pannel_pop()));
 
 	/*-----------------Setup The Capture Button-----------------*/
-	bt_capture = new QPushButton(("&Capture"), this);
+	bt_capture = new QPushButton(tr("&Capture"), this);
 	bt_capture -> setGeometry(84, 110, 100, 40);
 	connect(bt_capture, SIGNAL(clicked()), this, SLOT(capture()));
 
@@ -93,7 +102,7 @@ widget2::widget2(QWidget *parent): cap(0)
 	connect(bt_record_stop, SIGNAL(clicked()), this, SLOT(stop_record()));
 
 	/*-----------------Setup Image Button-----------------*/
-	bt_saveimage = new QPushButton("&Save image", this);
+	bt_saveimage = new QPushButton(tr("&Save image"), this);
 	bt_saveimage -> setGeometry(84, 320, 100, 40);
 	connect(bt_saveimage, SIGNAL(clicked()), this, SLOT(saveimage()));
 
@@ -109,8 +118,14 @@ widget2::widget2(QWidget *parent): cap(0)
 	showSelectColor -> setGeometry(0, 0, 800, 400);
 	// showSelectColor -> setGeometry(0, 250, 150, 150);
 	showRGB -> setGeometry(20, 5, 300, 20);
-	showRGB -> setFont(QFont("Droid Sans Fallback", 15, QFont::Bold));
+	showRGB -> setFont(QFont("0", 15, QFont::Bold));
 	
+	/*-----------------Setup Recording Display-----------------*/
+	showRec -> setHidden(true);
+	showRec -> setText("<font color='red'>∙REC</font>");
+	showRec -> setFont(QFont("Courier", 30, QFont::Bold));
+	showRec -> setGeometry(685, 5, 300, 50);
+	// connect(bt_record, SIGNAL(clicked()), this, SLOT())
 }
 
 
@@ -138,8 +153,7 @@ void widget2::open()
     	foreach (const QByteArray &mimeTypeName, QImageReader::supportedMimeTypes())
         	mimeTypeFilters.append(mimeTypeName);
     	mimeTypeFilters.sort();
-    	//const QStringList picturesLocations = QStandardPaths::standardLocations(QStandardPaths::PicturesLocation);
-    	QFileDialog dialog(this, tr("Open File")/*, picturesLocations.isEmpty() ? QDir::currentPath() : picturesLocations.last()*/, "background/");
+    	QFileDialog dialog(this, tr("Open File"), "background/");
     	dialog.setAcceptMode(QFileDialog::AcceptOpen);
    	dialog.setMimeTypeFilters(mimeTypeFilters);
     	dialog.selectMimeTypeFilter("image/png");
@@ -218,11 +232,34 @@ void widget2::control_pannel_pop()
 
 void widget2::recording()
 {
-	recount = 1;
+	recswitch = 1;
 	double dWidth = cap.get(CV_CAP_PROP_FRAME_WIDTH);
 	double dHeight = cap.get(CV_CAP_PROP_FRAME_HEIGHT);
 	Size frameSize(static_cast<int>(dWidth), static_cast<int>(dHeight));
-	writer = VideoWriter ("video/MyVideo.avi", CV_FOURCC('P','I','M','1'), 20, frameSize, true);
+	// cout << "Camera Capture Size (" << dWidth << " x " << dHeight << ")\n";
+	
+	/*--------------Setup Time Stamp---------------*/ 
+	t =  time(0);
+	now = localtime(&t);
+	stringstream ssy, ssm, ssd, sssec;
+	string tmp;
+	recname = "video/";
+	ssy << now->tm_year + 1900;
+	ssy >> tmp;
+	recname.append(tmp);
+	ssm << now->tm_mon + 1;
+	ssm >> tmp;
+	recname.append(tmp);
+	ssd << now->tm_mday;
+	ssd >> tmp;
+	recname.append(tmp);
+	recname.append("_");
+	sssec << t + (recount++);
+	sssec >> tmp;
+	recname.append(tmp);
+	recname.append("_Rec.avi");
+
+	writer = VideoWriter (recname, CV_FOURCC('P','I','M','1'), 20, frameSize, true);
 	recTime -> start(30);
 	bt_record -> setHidden(true);
 	bt_record_stop -> setHidden(false);
@@ -230,7 +267,7 @@ void widget2::recording()
 
 void widget2::record()
 {
-	if (recount == 1) writer.write(cresult);
+	if (recswitch == 1) writer.write(cresult);
 	else
 	{
 		recTime -> stop();
@@ -241,15 +278,36 @@ void widget2::record()
 
 void widget2::saveimage(){
 
+	/*--------------Setup Time Stamp---------------*/ 
+	t =  time(0);
+	now = localtime(&t);
+	stringstream ssy, ssm, ssd, ssh, ssmin, sssec;
+	string tmp;
+	capname = ("picture/");
+	ssy << now->tm_year + 1900;
+	ssy >> tmp;
+	capname.append(tmp);
+	ssm << now->tm_mon + 1;
+	ssm >> tmp;
+	capname.append(tmp);
+	ssd << now->tm_mday;
+	ssd >> tmp;
+	capname.append(tmp);
+	capname.append("_");
+	ssh << t + capcount++;
+	ssh >> tmp;
+	capname.append(tmp);
+	capname.append("_Picture.jpg");
+
 	vector<int> compression_params; 
 	compression_params.push_back(CV_IMWRITE_JPEG_QUALITY); 
      	compression_params.push_back(98); 
-     	imwrite("picture/TestImage.jpg", cresult, compression_params); 
+     	imwrite(capname, cresult, compression_params); 
 }
 
 void widget2::stop_record()
 {
-	recount = 0;
+	recswitch = 0;
 }
 
 void widget2::closeEvent(QCloseEvent *event)
