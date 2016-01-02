@@ -2,7 +2,6 @@
 #include <iostream>
 #include <cstdio>
 #include <QApplication>
-#include <QCommandLineParser>
 
 int main(int argc, char *argv[])
 {

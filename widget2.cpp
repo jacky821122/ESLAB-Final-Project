@@ -38,6 +38,7 @@ widget2::widget2(QWidget *parent): cap(0)
 	showRec = new QLabel(this);
 	tmpix = new QPixmap(800, 400);
 	showcap = new QLabel();
+	writer = new VideoWriter();
 	recswitch = 0;
 
 	/*----------For Time Stamp-----------*/	
@@ -196,13 +197,13 @@ void widget2::control_pannel_pop()
 void widget2::open_file()
 {
     	QStringList mimeTypeFilters;
-    	foreach (const QByteArray &mimeTypeName, QImageReader::supportedMimeTypes())
+    	foreach (const QByteArray &mimeTypeName, QImageReader::supportedImageFormats())
         	mimeTypeFilters.append(mimeTypeName);
     	mimeTypeFilters.sort();
     	QFileDialog dialog(this, tr("Open File"), "background/");
     	dialog.setAcceptMode(QFileDialog::AcceptOpen);
-   	dialog.setMimeTypeFilters(mimeTypeFilters);
-    	dialog.selectMimeTypeFilter("image/png");
+   	dialog.setNameFilters(mimeTypeFilters);
+    	dialog.selectNameFilter("image/png");
 
     	while (dialog.exec() == QDialog::Accepted && !loadFile(dialog.selectedFiles().first())) {}
 }
@@ -220,7 +221,7 @@ bool widget2::loadFile(const QString &fileName)
     	reader.setAutoDetectImageFormat(true);
     	const QImage image = reader.read();
     	if (image.isNull()) {
-        		QMessageBox::information(this, QGuiApplication::applicationDisplayName(),
+        		QMessageBox::information(this, "FUCK",
                       	tr("Cannot load %1.").arg(QDir::toNativeSeparators(fileName)));
         	setWindowFilePath(QString());
         	return false;
@@ -240,7 +241,7 @@ void widget2::showRec_stop()
 
 void widget2::record()
 {
-	if (recswitch == 1) writer.write(cresult);
+	if (recswitch == 1) writer -> write(cresult);
 	else
 	{
 		recTime -> stop();
@@ -279,7 +280,7 @@ void widget2::recording()
 	recname.append(tmp);
 	recname.append("_Rec.avi");
 
-	writer = VideoWriter (recname, CV_FOURCC('P','I','M','1'), 20, frameSize, true);
+	writer -> open(recname, CV_FOURCC('P','I','M','1'), 20, frameSize, true);
 	recTime -> start(30);
 	bt_record -> setHidden(true);
 	bt_record_stop -> setHidden(false);

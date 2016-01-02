@@ -1,4 +1,5 @@
-#include <QtWidgets>
+#include <QWidget>
+#include <QMouseEvent>
 #include <iostream> 
 #include "detectcolor.h"
 

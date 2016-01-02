@@ -35,7 +35,7 @@ public:
 	std::string recname, capname;
 	cv::VideoCapture cap;
 	cv::Mat ccapimg, cbackimg, cresult, cshowRGB;
-	cv::VideoWriter writer;
+	cv::VideoWriter *writer;
 
 	QPushButton *bt_background, *bt_saveimage;
 	bool loadFile(const QString &);
