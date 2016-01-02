@@ -1,10 +1,10 @@
 #ifndef DETECTCOLOR_H
 #define DETECTCOLOR_H
+#include <iostream>
 #include <QLabel>
 #include <QPixmap>
 #include <QImage>
 #include <QSize>
-#include <iostream>
 #include "opencv2/objdetect/objdetect.hpp"
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv2/imgproc/imgproc.hpp"

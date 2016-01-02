@@ -42,13 +42,13 @@ public:
 
 	public slots:
 	void camera_caping();
-	void capture();
+	void color_select();
 	void control_pannel_pop();
-	void open();
+	void open_file();
 	void record();
 	void recording();
 	void stop_record();
-	void saveimage();
+	void capture();
 	void showRec_start();
 	void showRec_stop();
 };

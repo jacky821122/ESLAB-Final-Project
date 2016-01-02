@@ -1,19 +1,15 @@
 #include "widget2.h"
 #include "sliderwidget.h"
 #include "detectcolor.h"
-#include <iostream>
 #include <sstream>
 #include <ctime>
 #include <QPoint>
 #include <QRect>
 #include <QString>
-#include <QApplication>
-
-#include <QString>
 #include <QFileDialog>
 #include <QStringList>
+#include <QApplication>
 #include <QMessageBox>
-#include <QStandardPaths>
 #include <QImageReader>
 
 using namespace cv;
@@ -38,10 +34,10 @@ widget2::widget2(QWidget *parent): cap(0)
 	showSelectColor = new QLabel(this);
 	showRGB = new QLabel(this);
 	showqbackimg = new QLabel(this);
-	showcap = new QLabel(this);
 	showqresult = new QLabel(this);
 	showRec = new QLabel(this);
 	tmpix = new QPixmap(800, 400);
+	showcap = new QLabel();
 	recswitch = 0;
 
 	/*----------For Time Stamp-----------*/	
@@ -75,36 +71,36 @@ widget2::widget2(QWidget *parent): cap(0)
 	showqbackimg -> setGeometry(rect);
 
 	/*-----------------Setup The Switch Button-----------------*/
-	bt_pannel = new QPushButton(tr("&Color Select"), this);
-	bt_pannel -> setGeometry(84, 40, 100, 40);
+	bt_pannel = new QPushButton(tr("&Color Pannel"), this);
+	bt_pannel -> setGeometry(69, 40, 130, 40);
 	connect(bt_pannel, SIGNAL(clicked()), this, SLOT(control_pannel_pop()));
 
 	/*-----------------Setup The Capture Button-----------------*/
-	bt_capture = new QPushButton(tr("&Capture"), this);
-	bt_capture -> setGeometry(84, 110, 100, 40);
-	connect(bt_capture, SIGNAL(clicked()), this, SLOT(capture()));
+	bt_capture = new QPushButton(tr("&Color Select"), this);
+	bt_capture -> setGeometry(69, 110, 130, 40);
+	connect(bt_capture, SIGNAL(clicked()), this, SLOT(color_select()));
 
 	/*-----------------Setup The Backing Image-----------------*/
 	qbackimg = QImage("background/1new.jpg");
 	bt_background = new QPushButton(tr("&Open"), this);
-	bt_background -> setGeometry(84, 180, 100, 40);
-	connect(bt_background, SIGNAL(clicked()), this, SLOT(open()));
+	bt_background -> setGeometry(69, 180, 130, 40);
+	connect(bt_background, SIGNAL(clicked()), this, SLOT(open_file()));
 
 	/*-----------------Setup Video Saving Button-----------------*/
 	bt_record = new QPushButton(tr("&Record"), this);
-	bt_record -> setGeometry(84, 250, 100, 40);
+	bt_record -> setGeometry(69, 250, 130, 40);
 	connect(bt_record, SIGNAL(clicked()), this, SLOT(recording()));
 
 	/*-----------------Setup Video Saving Stop Button-----------------*/
 	bt_record_stop = new QPushButton(tr("&Stop"), this);
-	bt_record_stop -> setGeometry(84, 250, 100, 40);
+	bt_record_stop -> setGeometry(69, 250, 130, 40);
 	bt_record_stop -> setHidden(true);
 	connect(bt_record_stop, SIGNAL(clicked()), this, SLOT(stop_record()));
 
 	/*-----------------Setup Image Button-----------------*/
-	bt_saveimage = new QPushButton(tr("&Save image"), this);
-	bt_saveimage -> setGeometry(84, 320, 100, 40);
-	connect(bt_saveimage, SIGNAL(clicked()), this, SLOT(saveimage()));
+	bt_saveimage = new QPushButton(tr("&Capture"), this);
+	bt_saveimage -> setGeometry(69, 320, 130, 40);
+	connect(bt_saveimage, SIGNAL(clicked()), this, SLOT(capture()));
 
 	/*-----------------Setup The Connection between Slider and Mouse Detecting-----------------*/
 	connect(subqlabel, SIGNAL(red_low_Changed( const int&)), swidget->red_low, SLOT(setValue(int)));
@@ -125,55 +121,7 @@ widget2::widget2(QWidget *parent): cap(0)
 	showRec -> setText("<font color='red'>∙REC</font>");
 	showRec -> setFont(QFont("Courier", 30, QFont::Bold));
 	showRec -> setGeometry(685, 5, 300, 50);
-	// QTimer *test = new QTimer(this);
-	// connect(test, SIGNAL(timeout()), this SLOT(showRec_start()));
  	connect(bt_record, SIGNAL(clicked()), this, SLOT(showRec_start()));
-}
-
-void widget2::showRec_start()
-{
-	if (recswitch == 0) return void();
-	showRec -> setHidden(false);
-	QTimer::singleShot(700, this, SLOT(showRec_stop()));
-}
-
-void widget2::showRec_stop()
-{
-	if (recswitch == 0) return void();
-	showRec -> setHidden(true);
-	QTimer::singleShot(700, this, SLOT(showRec_start()));
-}
-
-bool widget2::loadFile(const QString &fileName)
-{
-    	QImageReader reader(fileName);
-    	reader.setAutoDetectImageFormat(true);
-    	const QImage image = reader.read();
-    	if (image.isNull()) {
-        		QMessageBox::information(this, QGuiApplication::applicationDisplayName(),
-                      	tr("Cannot load %1.").arg(QDir::toNativeSeparators(fileName)));
-        	setWindowFilePath(QString());
-        	return false;
-    	}
-
-    	qbackimg = image;
-
-    	return true;
-}
-
-
-void widget2::open()
-{
-    	QStringList mimeTypeFilters;
-    	foreach (const QByteArray &mimeTypeName, QImageReader::supportedMimeTypes())
-        	mimeTypeFilters.append(mimeTypeName);
-    	mimeTypeFilters.sort();
-    	QFileDialog dialog(this, tr("Open File"), "background/");
-    	dialog.setAcceptMode(QFileDialog::AcceptOpen);
-   	dialog.setMimeTypeFilters(mimeTypeFilters);
-    	dialog.selectMimeTypeFilter("image/png");
-
-    	while (dialog.exec() == QDialog::Accepted && !loadFile(dialog.selectedFiles().first())) {}
 }
 
 void widget2::camera_caping()
@@ -220,7 +168,7 @@ void widget2::camera_caping()
 	showRGB -> setText(str);
 }
 
-void widget2::capture()
+void widget2::color_select()
 {
 	subqlabel -> setHidden(true);
 	subqlabel -> qcapimg = Mat2QImage(ccapimg);
@@ -243,6 +191,63 @@ void widget2::control_pannel_pop()
 {
 	swidget -> setHidden(true);
 	swidget -> show();
+}
+
+void widget2::open_file()
+{
+    	QStringList mimeTypeFilters;
+    	foreach (const QByteArray &mimeTypeName, QImageReader::supportedMimeTypes())
+        	mimeTypeFilters.append(mimeTypeName);
+    	mimeTypeFilters.sort();
+    	QFileDialog dialog(this, tr("Open File"), "background/");
+    	dialog.setAcceptMode(QFileDialog::AcceptOpen);
+   	dialog.setMimeTypeFilters(mimeTypeFilters);
+    	dialog.selectMimeTypeFilter("image/png");
+
+    	while (dialog.exec() == QDialog::Accepted && !loadFile(dialog.selectedFiles().first())) {}
+}
+
+void widget2::showRec_start()
+{
+	if (recswitch == 0) return void();
+	showRec -> setHidden(false);
+	QTimer::singleShot(700, this, SLOT(showRec_stop()));
+}
+
+bool widget2::loadFile(const QString &fileName)
+{
+    	QImageReader reader(fileName);
+    	reader.setAutoDetectImageFormat(true);
+    	const QImage image = reader.read();
+    	if (image.isNull()) {
+        		QMessageBox::information(this, QGuiApplication::applicationDisplayName(),
+                      	tr("Cannot load %1.").arg(QDir::toNativeSeparators(fileName)));
+        	setWindowFilePath(QString());
+        	return false;
+    	}
+
+    	qbackimg = image;
+
+    	return true;
+}
+
+void widget2::showRec_stop()
+{
+	if (recswitch == 0) return void();
+	showRec -> setHidden(true);
+	QTimer::singleShot(700, this, SLOT(showRec_start()));
+}
+
+void widget2::record()
+{
+	if (recswitch == 1) writer.write(cresult);
+	else
+	{
+		recTime -> stop();
+		showRec -> setHidden(true);
+		bt_record_stop -> setHidden(true);
+		bt_record -> setHidden(false);
+	}
 }
 
 void widget2::recording()
@@ -280,19 +285,12 @@ void widget2::recording()
 	bt_record_stop -> setHidden(false);
 }
 
-void widget2::record()
+void widget2::stop_record()
 {
-	if (recswitch == 1) writer.write(cresult);
-	else
-	{
-		recTime -> stop();
-		showRec -> setHidden(true);
-		bt_record_stop -> setHidden(true);
-		bt_record -> setHidden(false);
-	}
+	recswitch = 0;
 }
 
-void widget2::saveimage(){
+void widget2::capture(){
 
 	/*--------------Setup Time Stamp---------------*/ 
 	t =  time(0);
@@ -318,12 +316,11 @@ void widget2::saveimage(){
 	vector<int> compression_params; 
 	compression_params.push_back(CV_IMWRITE_JPEG_QUALITY); 
      	compression_params.push_back(98); 
-     	imwrite(capname, cresult, compression_params); 
-}
-
-void widget2::stop_record()
-{
-	recswitch = 0;
+     	imwrite(capname, cresult, compression_params);
+     	showcap -> setPixmap(QPixmap::fromImage(qresult).scaled(capsize));
+     	showcap -> setWindowTitle(QString::fromStdString(capname.substr(8)));
+     	showcap -> show();
+     	QTimer::singleShot(1500, showcap, SLOT(hide()));
 }
 
 void widget2::closeEvent(QCloseEvent *event)
