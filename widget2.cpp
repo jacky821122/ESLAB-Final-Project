@@ -191,7 +191,7 @@ void widget2::control_pannel_pop()
 void widget2::open_file()
 {
 	QStringList filters;
-	filters << "Image files (*.png *.xpm *.jpg)";
+	filters << "Image files (*.png)";
 
 	QFileDialog dialog(this, tr("Open File"), "background/");
 	dialog.setAcceptMode(QFileDialog::AcceptOpen);
