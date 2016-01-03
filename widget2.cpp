@@ -11,6 +11,7 @@
 #include <QApplication>
 #include <QMessageBox>
 #include <QImageReader>
+#include <QProgressDialog>
 
 using namespace cv;
 using namespace std;
@@ -22,8 +23,8 @@ void chromakey(const Mat, const Mat, Mat*);
 extern double red_l, red_h;
 extern double green_l, green_h;
 extern double blue_l, blue_h;
-int recswitch, recount, capcount;
-time_t t;
+int recswitch, recount, capcount, num_frames = 120, fps = 8, cancel = 0;
+time_t t, start, end;
 struct tm *now;
 
 widget2::widget2(QWidget *parent): cap(0)
@@ -117,10 +118,34 @@ widget2::widget2(QWidget *parent): cap(0)
 	showRec -> setFont(QFont("Courier", 30, QFont::Bold));
 	showRec -> setGeometry(685, 5, 300, 50);
  	connect(bt_record, SIGNAL(clicked()), this, SLOT(showRec_start()));
+
+	/*-----------------Estimating Camera FPS-----------------*/
+	QProgressDialog dlg(tr("Please hold the camera steadily"), tr("&Cancel"), 1, 120);
+	dlg.setWindowTitle(tr("Wait a Second"));
+	dlg.setWindowModality(Qt::WindowModal);
+	dlg.show();
+	Mat frame;
+	time(&start);
+	for (int i = 0; i < num_frames; i++)
+	{
+		cap >> frame;
+		if(i%7 == 0) dlg.setValue(i + 1);
+		if(dlg.wasCanceled())
+		{
+			cancel = 1;
+			break;
+		}
+	}
+	time(&end);
+	double seconds = difftime (end, start);
+	fps  = num_frames / seconds;
+	if(!cancel)
+	cout << "Estimated frames per second : " << fps << endl;
 }
 
 void widget2::camera_caping()
 {
+	if(cancel == 1) qApp -> quit();
 	cap >> ccapimg; //CV_8UC3
 
 	/*--------------For Testing---------------*/
@@ -271,7 +296,7 @@ void widget2::recording()
 	recname.append(tmp);
 	recname.append("_Rec.avi");
 
-	writer -> open(recname, CV_FOURCC('D', 'I', 'V', 'X'), 8, frameSize, true);
+	writer -> open(recname, CV_FOURCC('D', 'I', 'V', 'X'), fps, frameSize, true);
 	recTime -> start(30);
 	bt_record -> setHidden(true);
 	bt_record_stop -> setHidden(false);
