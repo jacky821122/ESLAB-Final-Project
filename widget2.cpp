@@ -50,12 +50,6 @@ widget2::widget2(QWidget *parent): cap(0)
 	this -> resize(800, 400); // In pandaboard
 	this -> setWindowTitle("Ariel");
 
-	/*-----------------Setup Capture Image Label-----------------*/
-	showcapture = new QLabel(this);
-	QPoint tmpoint = QPoint(0, capsize.height() + 20);
-	QRect tmprect = QRect(tmpoint, capsize);
-	showcapture -> setGeometry(tmprect);
-
 	/*-----------------Setup Timer-----------------*/
 	timer = new QTimer(this);
 	timer -> start(30);
