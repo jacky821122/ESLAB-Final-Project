@@ -197,7 +197,20 @@ void widget2::control_pannel_pop()
 
 void widget2::open_file()
 {
-    	QStringList mimeTypeFilters;
+	/*    	QStringList mimeTypeFilters;
+    	foreach (const QByteArray &mimeTypeName, QImageReader::supportedImageFormats())
+        	mimeTypeFilters.append(mimeTypeName);
+    	mimeTypeFilters.sort();*/
+        	QStringList filters;
+	filters << "Image files (*.png *.xpm *.jpg)";
+
+    	QFileDialog dialog(this, tr("Open File"), "background/");
+    	dialog.setAcceptMode(QFileDialog::AcceptOpen);
+   	dialog.setNameFilters(filters);
+    //	dialog.selectNameFilter("imagefuck/jpeg");
+    	while (dialog.exec() == QDialog::Accepted && !loadFile(dialog.selectedFiles().first())) {}
+    		
+/*    	QStringList mimeTypeFilters;
     	foreach (const QByteArray &mimeTypeName, QImageReader::supportedMimeTypes())
         	mimeTypeFilters.append(mimeTypeName);
     	mimeTypeFilters.sort();
@@ -207,7 +220,7 @@ void widget2::open_file()
     	dialog.selectMimeTypeFilter("image/png");
 
     	dialog.exec();
-    	// while (dialog.exec() == QDialog::Accepted && !loadFile(dialog.selectedFiles().first())) {}
+    	// while (dialog.exec() == QDialog::Accepted && !loadFile(dialog.selectedFiles().first())) {}*/
 }
 
 void widget2::showRec_start()
