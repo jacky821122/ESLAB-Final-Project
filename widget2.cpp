@@ -152,20 +152,7 @@ void widget2::camera_caping()
 	qresult = Mat2QImage(cresult);
 	showqresult -> setPixmap(QPixmap::fromImage(qresult).scaled(capsize));
 
-	/*-----------------Setup Select Color Display-----------------*/
-	tmpix -> fill(QColor::fromRgb(subqlabel->red, subqlabel->green, subqlabel->blue));
-	showSelectColor -> setPixmap(tmpix->scaled(800, 400));
-	QString str, str1, str2, str3;
-	str1 = QString("RGB : ( ");
-	str3 = str3.setNum(subqlabel->red);
-	str3.append(",");
-	str3.append(str2.setNum(subqlabel->green));
-	str3.append(",");
-	str3.append(str2.setNum(subqlabel->blue));
-	str3.append(" )");
-	str.append(str1);
-	str.append(str3);
-	showRGB -> setText(str);
+	
 }
 
 void widget2::color_select()
@@ -185,6 +172,21 @@ void widget2::color_select()
 
   	subqlabel -> image_test = subqlabel -> qcapimg;
 	subqlabel -> show();
+
+	/*-----------------Setup Select Color Display-----------------*/
+	tmpix -> fill(QColor::fromRgb(subqlabel->red, subqlabel->green, subqlabel->blue));
+	showSelectColor -> setPixmap(tmpix->scaled(800, 400));
+	QString str, str1, str2, str3;
+	str1 = QString("RGB : ( ");
+	str3 = str3.setNum(subqlabel->red);
+	str3.append(",");
+	str3.append(str2.setNum(subqlabel->green));
+	str3.append(",");
+	str3.append(str2.setNum(subqlabel->blue));
+	str3.append(" )");
+	str.append(str1);
+	str.append(str3);
+	showRGB -> setText(str);
 }
 
 void widget2::control_pannel_pop()
@@ -204,7 +206,8 @@ void widget2::open_file()
    	dialog.setMimeTypeFilters(mimeTypeFilters);
     	dialog.selectMimeTypeFilter("image/png");
 
-    	while (dialog.exec() == QDialog::Accepted && !loadFile(dialog.selectedFiles().first())) {}
+    	dialog.exec();
+    	// while (dialog.exec() == QDialog::Accepted && !loadFile(dialog.selectedFiles().first())) {}
 }
 
 void widget2::showRec_start()
