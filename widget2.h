@@ -25,7 +25,7 @@ public:
 	sliderwidget *swidget;
 	SubQLabel *subqlabel;
 	QSize capsize;
-	QLabel *showcap,*showqbackimg, *showqresult, *showcapture, *showSelectColor, *showRGB;
+	QLabel *showcap,*showqbackimg, *showqresult, *showSelectColor, *showRGB;
 	QLabel *showRec;
 	QImage qcapimg, qbackimg, qresult;
 	QTimer *timer, *recTime;

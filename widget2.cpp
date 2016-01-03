@@ -50,12 +50,6 @@ widget2::widget2(QWidget *parent): cap(0)
 	this -> resize(800, 400); // In pandaboard
 	this -> setWindowTitle("Ariel");
 
-	/*-----------------Setup Capture Image Label-----------------*/
-	showcapture = new QLabel(this);
-	QPoint tmpoint = QPoint(0, capsize.height() + 20);
-	QRect tmprect = QRect(tmpoint, capsize);
-	showcapture -> setGeometry(tmprect);
-
 	/*-----------------Setup Timer-----------------*/
 	timer = new QTimer(this);
 	timer -> start(30);
@@ -280,7 +274,7 @@ void widget2::recording()
 	recname.append(tmp);
 	recname.append("_Rec.avi");
 
-	writer -> open(recname, CV_FOURCC('D', 'I', 'V', 'X'), 10, frameSize, true);
+	writer -> open(recname, CV_FOURCC('D', 'I', 'V', 'X'), 8, frameSize, true);
 	recTime -> start(30);
 	bt_record -> setHidden(true);
 	bt_record_stop -> setHidden(false);
