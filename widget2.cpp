@@ -120,16 +120,17 @@ widget2::widget2(QWidget *parent): cap(0)
  	connect(bt_record, SIGNAL(clicked()), this, SLOT(showRec_start()));
 
 	/*-----------------Estimating Camera FPS-----------------*/
-	QProgressDialog dlg(tr("Please hold the camera steadily"), tr("&Cancel"), 1, 120);
+	QProgressDialog dlg(tr("Please hold the camera steadily"), tr("&Cancel"), 0, 120);
 	dlg.setWindowTitle(tr("Wait a Second"));
 	dlg.setWindowModality(Qt::WindowModal);
+	dlg.setMinimumDuration(0);
 	dlg.show();
 	Mat frame;
 	time(&start);
 	for (int i = 0; i < num_frames; i++)
 	{
 		cap >> frame;
-		if(i%7 == 0) dlg.setValue(i + 1);
+		if(i%9 == 0) dlg.setValue(i);
 		if(dlg.wasCanceled())
 		{
 			cancel = 1;
